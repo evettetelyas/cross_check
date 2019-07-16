@@ -15,4 +15,10 @@ module GameStatables
     return all_goals.max
   end
 
+  def percentage_home_wins
+    home_wins = @games.select {|key, value| value.home_goals > value.away_goals}
+    percentage = (home_wins.count / @games.count.to_f)*100
+    return percentage.round(2)
+  end
+
 end
