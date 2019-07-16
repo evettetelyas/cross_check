@@ -27,4 +27,12 @@ module GameStatables
     return percentage.round(2)
   end
 
+  def count_of_games_by_season
+    games_per_season = Hash.new(0)
+    @games.each do |key, value|
+      games_per_season[value.season] += 1
+    end
+    games_per_season
+  end
+
 end
