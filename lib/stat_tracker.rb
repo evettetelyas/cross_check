@@ -20,7 +20,7 @@ class StatTracker
   end
 
   def self.from_csv(locations)
-    games = create_games(locations[:games])
+    games = create_games(locations[:dummy_games])
     StatTracker.new(@games)
   end
 
