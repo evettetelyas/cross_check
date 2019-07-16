@@ -11,8 +11,8 @@ module GameStatables
   end
 
   def biggest_blowout
-    all_goals = @games.map {|key,value| (value.away_goals - value.home_goals).abs}
-    return all_goals.max
+    all_goal_values = @games.map {|key,value| (value.away_goals - value.home_goals).abs}
+    return all_goal_values.max
   end
 
   def percentage_home_wins
