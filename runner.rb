@@ -5,7 +5,7 @@ team_path = './data/team_info.csv'
 game_teams_path = './data/game_teams_stats.csv'
 dummy_game_path = './dummy_data/dummy_game.csv'
 dummy_team_path = './dummy_data/dummy_team_info.csv'
-dummy_game_teams_path = './dummy_data/dummy_game_teams_stats.csv'
+dummy_game_teams_path = './dummy_data/dummy_game_team_stats.csv'
 
 locations = {
   games: game_path,
@@ -17,4 +17,4 @@ locations = {
 }
 
 stat_tracker = StatTracker.from_csv(locations)
-binding pry
+binding.pry
