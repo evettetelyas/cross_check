@@ -4,6 +4,8 @@ require 'minitest/pride'
 SimpleCov.start
 require './lib/stat_tracker'
 require './lib/game'
+require './lib/team'
+require './lib/game_team'
 require 'pry'
 require 'csv'
 
@@ -15,7 +17,7 @@ class DummyGameTest < Minitest::Test
     game_teams_path = './data/game_teams_stats.csv'
     dummy_game_path = './dummy_data/dummy_game.csv'
     dummy_team_path = './dummy_data/dummy_team_info.csv'
-    dummy_game_teams_path = './dummy_data/dummy_game_teams_stats.csv'
+    dummy_game_teams_path = './dummy_data/dummy_game_team_stats.csv'
 
     locations = {
       games: game_path,
@@ -55,6 +57,12 @@ class DummyGameTest < Minitest::Test
 
   def test_percentage_visitor_wins
     assert_equal 30.00, @stat_tracker.percentage_visitor_wins
+  end
+
+  def test_count_of_games_by_season
+    expected = {"20122013" => 10}
+
+    assert_equal expected, @stat_tracker.count_of_games_by_season
   end
 
 end
