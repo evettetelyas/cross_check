@@ -4,9 +4,11 @@ require_relative './game'
 require_relative './team'
 require_relative './game_team'
 require_relative '../modules/game_statables'
+require_relative '../modules/league_statables'
 
 class StatTracker
   include GameStatables
+  include LeagueStatables
   attr_reader :games, :teams, :game_teams
 
   def initialize(games = {}, teams = {}, game_teams = {})
@@ -32,17 +34,17 @@ class StatTracker
   end
 
   def self.create_game_teams(location)
-    game_teams = Hash.new {|h,k| h[k] = []}
-    CSV.foreach(location, :headers => true) do |row|
-      game_teams[row.first[1]] << GameTeam.new(row)
+    game_teams = Hash.new
+    CSV.foreach(location, :headers => true).with_index do |row, i|
+      game_teams[i + 1] = GameTeam.new(row)
     end
     game_teams
   end
 
   def self.from_csv(locations)
-    games = create_games(locations[:dummy_games])
-    teams = create_teams(locations[:dummy_teams])
-    game_teams = create_game_teams(locations[:dummy_game_teams])
+    games = create_games(locations[:games])
+    teams = create_teams(locations[:teams])
+    game_teams = create_game_teams(locations[:game_teams])
     StatTracker.new(games, teams, game_teams)
   end
 
