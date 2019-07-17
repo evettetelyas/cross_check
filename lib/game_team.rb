@@ -7,10 +7,10 @@ class GameTeam
     @hoa = row["HoA"]
     @won = row["won"]
     @head_coach = row["head_coach"]
-    @goals = row["goals"]
-    @shots = row["shots"]
-    @hits = row["hits"]
-    @power_play_goals = row["powerPlayGoals"]
+    @goals = row["goals"].to_i
+    @shots = row["shots"].to_i
+    @hits = row["hits"].to_i
+    @power_play_goals = row["powerPlayGoals"].to_i
   end
 
 end
