@@ -161,5 +161,41 @@ class DummyGameTest < Minitest::Test
     assert_equal "Penguins", @stat_tracker.winningest_team
   end
 
+  def test_home_games_won
+    assert_instance_of Array, @stat_tracker.home_games_won("6")
+    assert_instance_of Game, @stat_tracker.home_games_won("6")[0]
+    assert_equal 2, @stat_tracker.home_games_won("6").size
+  end
 
+  def test_away_games_won
+    assert_instance_of Array, @stat_tracker.away_games_won("6")
+    assert_instance_of Game, @stat_tracker.away_games_won("6")[0]
+    assert_equal 1, @stat_tracker.away_games_won("6").size
+  end
+
+  def test_all_games_won
+    assert_instance_of Array, @stat_tracker.all_games_won("6")
+    assert_instance_of Game, @stat_tracker.all_games_won("6")[0]
+    assert_equal 3, @stat_tracker.all_games_won("6").size
+  end
+
+  def test_home_game_win_percentage
+    assert_equal 0.5, @stat_tracker.home_game_win_percentage("6")
+  end
+
+  def test_away_game_win_percentage
+    assert_equal 0.5, @stat_tracker.away_game_win_percentage("6")
+  end
+
+  def test_all_games_win_percentage
+    assert_equal 0.57, @stat_tracker.all_games_winning_percentage("5")
+  end
+
+  def test_best_fans
+    assert_equal "Penguins", @stat_tracker.best_fans
+  end
+
+  def test_worst_fans
+    assert_equal ["Rangers"], @stat_tracker.worst_fans
+  end
 end
