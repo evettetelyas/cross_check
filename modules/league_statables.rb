@@ -12,17 +12,17 @@ module LeagueStatables
     game_teams_by_team(team_id).sum { |game_team| game_team.goals }
   end
 
-  def average_goals_per_game(team_id)
+  def average_goals_per_game_team(team_id)
     (total_goals(team_id) / game_teams_by_team(team_id).size.to_f).round(2)
   end
 
   def best_offense
-    @teams.values.max_by { |value| average_goals_per_game(value.team_id) }
+    @teams.values.max_by { |value| average_goals_per_game_team(value.team_id) }
       .team_name
   end
 
   def worst_offense
-    @teams.values.min_by { |value| average_goals_per_game(value.team_id) }
+    @teams.values.min_by { |value| average_goals_per_game_team(value.team_id) }
       .team_name
   end
 
@@ -101,4 +101,20 @@ module LeagueStatables
     @teams.values.min_by { |value| average_home_goals(value.team_id) }
       .team_name
   end
+
+  def winningest_team
+    num_of_wins_data = Hash.new(0)
+    @game_teams.values.map do |team|
+      if team.won?
+        num_of_wins_data[team.team_id]+= 1
+      end
+    end
+    id_avg = Hash.new
+    num_of_wins_data.each do |team_id, wins|
+      id_avg[team_id] = (wins.to_f / games_by_team(team_id).count)
+    end
+    winningest = id_avg.max_by {|k,v| v}
+    @teams[winningest.first].team_name
+  end
+
 end

@@ -13,4 +13,8 @@ class GameTeam
     @power_play_goals = row["powerPlayGoals"].to_i
   end
 
+  def won?
+    @won == "TRUE"
+  end
+
 end
