@@ -141,4 +141,6 @@ module LeagueStatables
     bad_fans.map { |value| value.team_name }
   end
 
+
+
 end
