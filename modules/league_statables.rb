@@ -113,8 +113,10 @@ module LeagueStatables
     num_of_wins_data.each do |team_id, wins|
       id_avg[team_id] = (wins.to_f / games_by_team(team_id).count)
     end
-    winningest = id_avg.max_by {|k,v| v}
+    winningest = id_avg.max_by {|team_id,percentage| percentage}
     @teams[winningest.first].team_name
   end
+
+
 
 end

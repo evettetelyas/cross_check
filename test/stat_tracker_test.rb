@@ -21,45 +21,145 @@ class DummyGameTest < Minitest::Test
   end
 
   def test_attributes
-    assert_instance_of Game, @stat_tracker.games["2012030221"]
+    assert_instance_of Game, @stat_tracker.games["2014030135"]
+    assert_instance_of GameTeam, @stat_tracker.game_teams[4]
+  end
+
+  def test_won
+    assert @stat_tracker.game_teams[4].won?
   end
 
   def test_highest_total_score
-    skip
-    assert_equal 7, @stat_tracker.highest_total_score
+    assert_equal 9, @stat_tracker.highest_total_score
   end
 
 
   def test_lowest_total_score
-    skip
-    assert_equal 1, @stat_tracker.lowest_total_score
+    assert_equal 3, @stat_tracker.lowest_total_score
   end
 
   def test_biggest_blowout
-    skip
-    assert_equal 5, @stat_tracker.biggest_blowout
+    assert_equal 3, @stat_tracker.biggest_blowout
   end
 
   def test_percentage_home_wins
-    skip
-    assert_equal 70.00, @stat_tracker.percentage_home_wins
+    assert_equal 0.5, @stat_tracker.percentage_home_wins
   end
 
   def test_percentage_visitor_wins
-    skip
-    assert_equal 30.00, @stat_tracker.percentage_visitor_wins
+    assert_equal 0.5, @stat_tracker.percentage_visitor_wins
   end
 
   def test_count_of_games_by_season
-    skip
-    expected = {"20122013" => 10}
+    expected = {"20142015" => 5, "20122013" => 5}
 
     assert_equal expected, @stat_tracker.count_of_games_by_season
   end
 
   def test_average_goals_per_game
-    skip
-    assert_equal 4.5, @stat_tracker.average_goals_per_game
+    assert_equal 4.7, @stat_tracker.average_goals_per_game
   end
+
+  def test_average_goals_per_season
+    expected = {"20142015" => 4.4, "20122013" => 5.0}
+    assert_equal expected, @stat_tracker.average_goals_by_season
+  end
+
+  def test_team_count
+    assert_equal 3, @stat_tracker.count_of_teams
+  end
+
+  def test_game_team_by_team
+    assert_equal 6, @stat_tracker.game_teams_by_team("6").count
+  end
+
+  def test_total_goals
+    assert_equal 14, @stat_tracker.total_goals("6")
+  end
+
+  def test_average_goals_per_game_team
+    assert_equal 2.33, @stat_tracker.average_goals_per_game_team("6")
+  end
+
+  def test_best_offense
+    assert_equal "Bruins", @stat_tracker.best_offense
+  end
+
+  def test_worst_offense
+    assert_equal "Rangers", @stat_tracker.worst_offense
+  end
+
+  def test_games_by_team
+    assert_equal 6, @stat_tracker.games_by_team("6").count
+  end
+
+  def test_home_games
+    assert_equal 4, @stat_tracker.home_games("6").count
+  end
+
+  def test_away_games
+    assert_equal 2, @stat_tracker.away_games("6").count
+  end
+
+  def test_home_goals_allowed
+    assert_equal 10, @stat_tracker.home_goals_allowed("6")
+  end
+
+  def test_away_goals_allowed
+    assert_equal 3, @stat_tracker.away_goals_allowed("6")
+  end
+
+  def test_total_goals_allowed
+    assert_equal 13, @stat_tracker.total_goals_allowed("6")
+  end
+
+  def average_total_goals_allowed
+    assert_equal 2.17, @stat_tracker.average_goals_allowed("6")
+  end
+
+  def test_best_defense
+    assert_equal "Penguins", @stat_tracker.best_defense
+  end
+
+  def test_worst_defense
+    assert_equal "Rangers", @stat_tracker.worst_defense
+  end
+
+  def test_total_home_goals
+    assert_equal 11, @stat_tracker.total_home_goals("6")
+  end
+
+  def test_total_away_goals
+    assert_equal 3, @stat_tracker.total_away_goals("6")
+  end
+
+  def test_average_away_goals
+    assert_equal 1.5, @stat_tracker.average_away_goals("6")
+  end
+
+  def test_average_home_goals
+    assert_equal 2.75, @stat_tracker.average_home_goals("6")
+  end
+
+  def test_highest_scoring_visitor
+    assert_equal "Penguins", @stat_tracker.highest_scoring_visitor
+  end
+
+  def test_highest_scoring_home_team
+    assert_equal "Bruins", @stat_tracker.highest_scoring_home_team
+  end
+
+  def test_lowest_scoring_visitor
+    assert_equal "Bruins", @stat_tracker.lowest_scoring_visitor
+  end
+
+  def test_lowest_scoring_home_team
+    assert_equal "Rangers", @stat_tracker.lowest_scoring_home_team
+  end
+
+  def test_winningest_team
+    assert_equal "Penguins", @stat_tracker.winningest_team
+  end
+
 
 end
