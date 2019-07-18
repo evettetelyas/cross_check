@@ -141,19 +141,19 @@ module SeasonStatables
     game_teams_by_season_by_team(team_id, season).sum { |game_team| game_team.hits }
   end
 
-  def most_accurate_team(season)
-    @teams.values.max_by do |value|
-      total_shots_by_season_by_team(value.team_id, season) /
-      total_goals_by_season_by_team(value.team_id, season).to_f
-    end.team_name
-  end
-
-  def least_accurate_team(season)
-    @teams.values.min_by do |value|
-      total_shots_by_season_by_team(value.team_id, season) /
-      total_goals_by_season_by_team(value.team_id, season).to_f
-    end.team_name
-  end
+  # def most_accurate_team(season)
+  #   @teams.values.max_by do |value|
+  #     total_shots_by_season_by_team(value.team_id, season) /
+  #     total_goals_by_season_by_team(value.team_id, season).to_f
+  #   end.team_name
+  # end
+  #
+  # def least_accurate_team(season)
+  #   @teams.values.min_by do |value|
+  #     total_shots_by_season_by_team(value.team_id, season) /
+  #     total_goals_by_season_by_team(value.team_id, season).to_f
+  #   end.team_name
+  # end
 
   def most_hits(season)
     @teams.values.max_by do |value|
@@ -161,11 +161,11 @@ module SeasonStatables
     end.team_name
   end
 
-  def fewest_hits(season)
-    @teams.values.min_by do |value|
-      total_hits_by_season_by_team(value.team_id, season)
-    end.team_name
-  end
+  # def fewest_hits(season)
+  #   @teams.values.min_by do |value|
+  #     total_hits_by_season_by_team(value.team_id, season)
+  #   end.team_name
+  # end
 
 
 
