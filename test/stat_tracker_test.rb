@@ -199,6 +199,18 @@ class DummyGameTest < Minitest::Test
     assert_equal ["Rangers"], @stat_tracker.worst_fans
   end
 
+  def test_team_info
+    assert_instance_of Hash, @stat_tracker.team_info("6")
+  end
+
+  def test_best_season
+    assert_equal "20142015", @stat_tracker.best_season("3")
+  end
+
+  def test_worst_season
+    assert_equal "20122013", @stat_tracker.worst_season("3")
+  end
+
   def test_regular_season_games_by_team
     assert_instance_of Game, @stat_tracker.regular_season_games_by_team("6", "20142015").first
     assert_equal 2, @stat_tracker.regular_season_games_by_team("6", "20142015").size
