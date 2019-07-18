@@ -158,4 +158,47 @@ module TeamStatables
     @teams[best_team[0]].team_name
   end
 
+  def biggest_team_blowout_hash(team_id)
+    opponent_blowout_stats = Hash.new(0)
+    @teams.values.each do |team|
+      opponent_blowout_stats[team.team_id] = []
+    end
+    opponent_blowout_stats.each do |other_team_id, blowout_abs|
+      @game_teams.values.each do |g|
+        if @games[g.game_id].home_team_id == other_team_id && @games[g.game_id].away_team_id == team_id && @games[g.game_id].away_goals > @games[g.game_id].home_goals
+          opponent_blowout_stats[@games[g.game_id].home_team_id] << ((@games[g.game_id].home_goals - @games[g.game_id].away_goals).abs)
+        elsif @games[g.game_id].away_team_id == other_team_id && @games[g.game_id].home_team_id == team_id && @games[g.game_id].away_goals < @games[g.game_id].home_goals
+          opponent_blowout_stats[@games[g.game_id].away_team_id] << ((@games[g.game_id].home_goals - @games[g.game_id].away_goals).abs)
+        end
+      end
+    end
+    opponent_blowout_stats
+  end
+
+  def biggest_team_loss_hash(team_id)
+    opponent_blowout_stats = Hash.new(0)
+    @teams.values.each do |team|
+      opponent_blowout_stats[team.team_id] = []
+    end
+    opponent_blowout_stats.each do |other_team_id, blowout_abs|
+      @game_teams.values.each do |g|
+        if @games[g.game_id].home_team_id == other_team_id && @games[g.game_id].away_team_id == team_id && @games[g.game_id].away_goals < @games[g.game_id].home_goals
+          opponent_blowout_stats[@games[g.game_id].home_team_id] << ((@games[g.game_id].home_goals - @games[g.game_id].away_goals).abs)
+        elsif @games[g.game_id].away_team_id == other_team_id && @games[g.game_id].home_team_id == team_id && @games[g.game_id].away_goals > @games[g.game_id].home_goals
+          opponent_blowout_stats[@games[g.game_id].away_team_id] << ((@games[g.game_id].home_goals - @games[g.game_id].away_goals).abs)
+        end
+      end
+    end
+    opponent_blowout_stats
+  end
+
+
+  def biggest_team_blowout(team_id)
+    biggest_team_blowout_hash(team_id).values.flatten.uniq.max
+  end
+
+  def worst_loss(team_id)
+    biggest_team_loss_hash(team_id).values.flatten.uniq.max
+  end
+
 end
