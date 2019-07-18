@@ -209,6 +209,11 @@ class DummyGameTest < Minitest::Test
     assert_equal 2, @stat_tracker.postseason_games_by_team("3", "20142015").size
   end
 
+  def test_season_games_by_team
+    assert_instance_of Game, @stat_tracker.season_games_by_team("3", "20122013").first
+    assert_equal 3, @stat_tracker.season_games_by_team("3", "20122013").size
+  end
+
   def test_regular_season_wins_by_team
     assert_instance_of Game, @stat_tracker.regular_season_wins_by_team("5", "20122013").first
     assert_equal 2, @stat_tracker.regular_season_wins_by_team("5", "20122013").size
@@ -219,12 +224,21 @@ class DummyGameTest < Minitest::Test
     assert_equal 2, @stat_tracker.postseason_wins_by_team("3", "20142015").size
   end
 
+  def test_season_wins_by_team
+    assert_instance_of Game, @stat_tracker.season_wins_by_team("3", "20122013").first
+    assert_equal 1, @stat_tracker.season_wins_by_team("3", "20122013").size
+  end
+
   def test_regular_season_win_percentage
     assert_equal 0.5, @stat_tracker.regular_season_win_percentage("3", "20122013")
   end
 
   def test_postseason_win_percentage
     assert_equal 1.0, @stat_tracker.postseason_win_percentage("6", "20122013")
+  end
+
+  def test_postseason_win_percentage
+    assert_equal 0.33, @stat_tracker.season_win_percentage("3", "20122013")
   end
 
   def test_biggest_bust

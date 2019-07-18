@@ -16,6 +16,13 @@ module SeasonStatables
     end
   end
 
+  def season_games_by_team(team_id, season)
+    @games.values.find_all do |value|
+      value.season == season &&
+      (value.away_team_id == team_id || value.home_team_id == team_id)
+    end
+  end
+
   def regular_season_wins_by_team(team_id, season)
     regular_season_games_by_team(team_id, season).find_all do |game|
       if game.away_team_id == team_id
@@ -36,6 +43,16 @@ module SeasonStatables
     end
   end
 
+  def season_wins_by_team(team_id, season)
+    season_games_by_team(team_id, season).find_all do |game|
+      if game.away_team_id == team_id
+        game.away_goals > game.home_goals
+      elsif game.home_team_id == team_id
+        game.home_goals > game.away_goals
+      end
+    end
+  end
+
   def regular_season_win_percentage(team_id, season)
     (regular_season_wins_by_team(team_id, season).size /
       regular_season_games_by_team(team_id, season).size.to_f).round(2)
@@ -48,6 +65,11 @@ module SeasonStatables
       (postseason_wins_by_team(team_id, season).size /
         postseason_games_by_team(team_id, season).size.to_f).round(2)
     end
+  end
+
+  def season_win_percentage(team_id, season)
+    (season_wins_by_team(team_id, season).size /
+      season_games_by_team(team_id, season).size.to_f).round(2)
   end
 
   def biggest_bust(season)
