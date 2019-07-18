@@ -85,4 +85,78 @@ module TeamStatables
     fewest_goals_stat[1]
   end
 
+  def opponent_games_played(team_id)
+    opponent_stats = Hash.new(0)
+    @teams.values.each do |team|
+      opponent_stats[team.team_id] = 0
+    end
+    opponent_stats.each do |other_team_id, num_wins|
+      @game_teams.values.each do |g|
+        if @games[g.game_id].home_team_id == other_team_id && @games[g.game_id].away_team_id == team_id
+          opponent_stats[@games[g.game_id].home_team_id] += 1
+        elsif @games[g.game_id].away_team_id == other_team_id && @games[g.game_id].home_team_id == team_id
+          opponent_stats[@games[g.game_id].away_team_id] += 1
+        end
+      end
+    end
+    opponent_stats.each do |team_id, games|
+      if games == 0
+        opponent_stats.delete(team_id)
+      end
+    end
+  end
+
+  def opponent_games_lost(team_id)
+    opponent_stats = Hash.new(0)
+    @teams.values.each do |team|
+      opponent_stats[team.team_id] = 0
+    end
+    opponent_stats.each do |other_team_id, num_wins|
+      @game_teams.values.each do |g|
+        if @games[g.game_id].home_team_id == other_team_id && @games[g.game_id].away_team_id == team_id && @games[g.game_id].away_goals < @games[g.game_id].home_goals
+          opponent_stats[@games[g.game_id].home_team_id] += 1
+        elsif @games[g.game_id].away_team_id == other_team_id && @games[g.game_id].home_team_id == team_id && @games[g.game_id].away_goals > @games[g.game_id].home_goals
+          opponent_stats[@games[g.game_id].away_team_id] += 1
+        end
+      end
+    end
+    opponent_stats
+  end
+
+  def opponent_games_won(team_id)
+    opponent_stats = Hash.new(0)
+    @teams.values.each do |team|
+      opponent_stats[team.team_id] = 0
+    end
+    opponent_stats.each do |other_team_id, num_wins|
+      @game_teams.values.each do |g|
+        if @games[g.game_id].home_team_id == other_team_id && @games[g.game_id].away_team_id == team_id && @games[g.game_id].away_goals > @games[g.game_id].home_goals
+          opponent_stats[@games[g.game_id].home_team_id] += 1
+        elsif @games[g.game_id].away_team_id == other_team_id && @games[g.game_id].home_team_id == team_id && @games[g.game_id].away_goals < @games[g.game_id].home_goals
+          opponent_stats[@games[g.game_id].away_team_id] += 1
+        end
+      end
+    end
+    opponent_stats
+  end
+
+  def favorite_opponent_stats(team_id)
+   opponent_games_won(team_id).merge(opponent_games_played(team_id)) {|opponent, lost, played| lost / played.to_f}
+  end
+
+  def rival_opponent_stats(team_id)
+   opponent_games_lost(team_id).merge(opponent_games_played(team_id)) {|opponent, lost, played| lost / played.to_f}
+  end
+
+
+  def favorite_opponent(team_id)
+    worst_team = favorite_opponent_stats(team_id).max_by {|k,v| v}
+    @teams[worst_team[0]].team_name
+  end
+
+  def rival(team_id)
+    best_team = rival_opponent_stats(team_id).max_by {|k,v| v}
+    @teams[best_team[0]].team_name
+  end
+
 end
