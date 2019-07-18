@@ -57,6 +57,32 @@ module TeamStatables
     avg.round(2)
   end
 
-  
+  def all_game_goals(team_id)
+    all_goals_by_game = Hash.new
+    all_games = []
+    @games.values.each do |game|
+      if team_id == game.home_team_id || game.away_team_id
+        all_games << game
+      end
+    end
+    all_games.each do |game|
+      if team_id == game.home_team_id
+      all_goals_by_game[game] = game.home_goals
+      elsif team_id == game.away_team_id
+      all_goals_by_game[game] = game.away_goals
+      end
+    end
+    all_goals_by_game
+  end
+
+  def most_goals_scored(team_id)
+    most_goals_stat = all_game_goals(team_id).max_by {|k,v| v}
+    most_goals_stat[1]
+  end
+
+  def fewest_goals_scored(team_id)
+    fewest_goals_stat = all_game_goals(team_id).min_by {|k,v| v}
+    fewest_goals_stat[1]
+  end
 
 end
