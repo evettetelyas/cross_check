@@ -102,19 +102,45 @@ module LeagueStatables
       .team_name
   end
 
-  def winningest_team
-    num_of_wins_data = Hash.new(0)
-    @game_teams.values.map do |team|
-      if team.won?
-        num_of_wins_data[team.team_id]+= 1
-      end
-    end
-    id_avg = Hash.new
-    num_of_wins_data.each do |team_id, wins|
-      id_avg[team_id] = (wins.to_f / games_by_team(team_id).count)
-    end
-    winningest = id_avg.max_by {|k,v| v}
-    @teams[winningest.first].team_name
+  def home_games_won(team_id)
+    home_games(team_id).find_all { |game| game.home_goals > game.away_goals }
   end
+
+  def away_games_won(team_id)
+    away_games(team_id).find_all { |game| game.away_goals > game.home_goals }
+  end
+
+  def all_games_won(team_id)
+    home_games_won(team_id) + away_games_won(team_id)
+  end
+
+  def home_game_win_percentage(team_id)
+    (home_games_won(team_id).size / home_games(team_id).size.to_f).round(2)
+  end
+
+  def away_game_win_percentage(team_id)
+    (away_games_won(team_id).size / away_games(team_id).size.to_f).round(2)
+  end
+
+  def all_games_winning_percentage(team_id)
+    (all_games_won(team_id).size / games_by_team(team_id).size.to_f).round(2)
+  end
+
+  def winningest_team
+    @teams.values.max_by { |value| all_games_winning_percentage(value.team_id) }
+      .team_name
+  end
+
+  def best_fans
+    @teams.values.max_by { |value| home_game_win_percentage(value.team_id) - away_game_win_percentage(value.team_id) }
+      .team_name
+  end
+
+  def worst_fans
+    bad_fans = @teams.values.find_all { |value| home_game_win_percentage(value.team_id) < away_game_win_percentage(value.team_id) }
+    bad_fans.map { |value| value.team_name }
+  end
+
+
 
 end
