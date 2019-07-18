@@ -50,4 +50,13 @@ module TeamStatables
     all_season_won_games
   end
 
+  def average_win_percentage(team_id)
+    all_wins = all_games_won_by_season(team_id).values.sum
+    all_games = all_games_played_by_season(team_id).values.sum
+    avg = all_wins/all_games.to_f
+    avg.round(2)
+  end
+
+  
+
 end
