@@ -148,7 +148,6 @@ module TeamStatables
    opponent_games_lost(team_id).merge(opponent_games_played(team_id)) {|opponent, lost, played| lost / played.to_f}
   end
 
-
   def favorite_opponent(team_id)
     worst_team = favorite_opponent_stats(team_id).max_by {|k,v| v}
     @teams[worst_team[0]].team_name
