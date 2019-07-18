@@ -72,15 +72,31 @@ module SeasonStatables
       season_games_by_team(team_id, season).size.to_f).round(2)
   end
 
+  def all_season_games(season)
+    @games.values.find_all { |value| value.season == season }
+  end
+
+  def postseason_games(season)
+    @games.values.find_all { |value| value.season == season && value.type == "P" }
+  end
+
+  def teams_that_made_the_postseason(season)
+    home = postseason_games(season).map { |game| game.home_team_id }
+    away = postseason_games(season).map { |game| game.away_team_id }
+    all_ids = home + away
+    all_ids.uniq!
+    all_ids.map { |team_id| @teams[team_id] }
+  end
+
   def biggest_bust(season)
-    @teams.values.max_by do |value|
+    teams_that_made_the_postseason(season).max_by do |value|
       regular_season_win_percentage(value.team_id, season) -
       postseason_win_percentage(value.team_id, season)
     end.team_name
   end
 
   def biggest_surprise(season)
-    @teams.values.max_by do |value|
+    teams_that_made_the_postseason(season).max_by do |value|
       postseason_win_percentage(value.team_id, season) -
       regular_season_win_percentage(value.team_id, season)
     end.team_name

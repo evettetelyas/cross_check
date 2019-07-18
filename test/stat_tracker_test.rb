@@ -241,6 +241,20 @@ class DummyGameTest < Minitest::Test
     assert_equal 0.33, @stat_tracker.season_win_percentage("3", "20122013")
   end
 
+  def test_all_season_games
+    assert_instance_of Game, @stat_tracker.all_season_games("20122013").first
+    assert_equal 5, @stat_tracker.all_season_games("20122013").size
+  end
+
+  def test_postseason_games
+    assert_instance_of Game, @stat_tracker.postseason_games("20122013").first
+    assert_equal 2, @stat_tracker.postseason_games("20122013").size
+  end
+
+  def test_teams_that_made_the_postseason
+    assert_equal 2, @stat_tracker.teams_that_made_the_postseason("20142015").size
+  end
+
   def test_biggest_bust
     assert_equal "Penguins", @stat_tracker.biggest_bust("20122013")
   end
