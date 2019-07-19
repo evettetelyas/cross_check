@@ -269,46 +269,46 @@ module TeamStatables
   end
 
   def games_per_season_type(team_id, post_reg)
-    post_season_games = Hash.new(0)
+    season_games = Hash.new(0)
     all_seasons_ary = []
     @games.values.map do |game|
       all_seasons_ary << game.season
     end
     all_seasons_ary.uniq.each do |season|
-      post_season_games[season] = @games.values.count {|g| g.season == season && g.type == post_reg && (g.home_team_id == team_id || g.away_team_id == team_id)}
+      season_games[season] = @games.values.count {|g| g.season == season && g.type == post_reg && (g.home_team_id == team_id || g.away_team_id == team_id)}
     end
-    post_season_games
+    season_games
   end
 
   def games_won_per_season_type (team_id, post_reg)
-    post_season_games = Hash.new(0)
+    season_games = Hash.new(0)
     all_seasons_ary = []
     @games.values.map do |game|
       all_seasons_ary << game.season
     end
     all_seasons_ary.uniq.each do |season|
-      post_season_games[season] << @games.values.count do |g|
+      season_games[season] << @games.values.count do |g|
         g.season == season && g.type == post_reg &&
         (g.home_team_id == team_id || g.away_team_id == team_id) &&
         if g.home_team_id == team_id &&
           g.home_goals > g.away_goals
-          post_season_games[season] += 1
+          season_games[season] += 1
         elsif g.away_team_id == team_id &&
           g.away_goals > g.home_goals
-          post_season_games[season] += 1
+          season_games[season] += 1
         end
       end
     end
-    post_season_games
+    season_games
   end
 
   def season_win_percentages_type(team_id, post_reg)
-    post_seazy = games_won_per_season_type(team_id, post_reg).merge(games_per_season_type(team_id, post_reg)) {|season, won, played| won / played.to_f}
-    post_seazy.transform_values{|v| v.round(2)}
+    seazy = games_won_per_season_type(team_id, post_reg).merge(games_per_season_type(team_id, post_reg)) {|season, won, played| won / played.to_f}
+    seazy.transform_values{|v| v.round(2)}
   end
 
   def goals_scored_per_season_type(team_id, post_reg)
-    post_season_goals = Hash.new(0)
+    season_goals = Hash.new(0)
     all_seasons_ary = []
     @games.values.map do |game|
       all_seasons_ary << game.season
@@ -317,18 +317,18 @@ module TeamStatables
       @games.values.each do |g|
         if g.season == season && g.type == post_reg &&
         g.home_team_id == team_id
-        post_season_goals[season] += g.home_goals
+        season_goals[season] += g.home_goals
       elsif g.season == season && g.type == post_reg &&
         g.away_team_id == team_id
-        post_season_goals[season] += g.away_goals
+        season_goals[season] += g.away_goals
         end
       end
     end
-    post_season_goals
+    season_goals
   end
 
   def goals_allowed_per_season_type(team_id, post_reg)
-    post_season_goals = Hash.new(0)
+    season_goals = Hash.new(0)
     all_seasons_ary = []
     @games.values.map do |game|
       all_seasons_ary << game.season
@@ -337,14 +337,14 @@ module TeamStatables
       @games.values.each do |g|
         if g.season == season && g.type == post_reg &&
         g.home_team_id == team_id
-        post_season_goals[season] += g.away_goals
+        season_goals[season] += g.away_goals
       elsif g.season == season && g.type == post_reg &&
         g.away_team_id == team_id
-        post_season_goals[season] += g.home_goals
+        season_goals[season] += g.home_goals
         end
       end
     end
-    post_season_goals
+    season_goals
   end
 
   def average_goals_scored_season_type(team_id, post_reg)
