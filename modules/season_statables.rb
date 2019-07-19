@@ -1,4 +1,13 @@
 module SeasonStatables
+
+  def all_seasons_array
+    seasons = []
+    @games.values.each do |game|
+      seasons << game.season
+    end
+    @all_seasons_array ||= seasons.uniq!
+  end
+
   def regular_season_games_by_team(season)
     hash = Hash.new(0)
     @teams.values.each do |team|
@@ -69,17 +78,19 @@ module SeasonStatables
     @teams[array[0]].team_name
   end
 
-  def all_coaches_array
+  def all_coaches_array(season)
     array = []
     @game_teams.values.each do |game_team|
-      array << game_team.head_coach
+      if @games[game_team.game_id].season == season
+        array << game_team.head_coach
+      end
     end
     array.uniq
   end
 
   def games_by_coach(season)
     hash = Hash.new(0)
-    all_coaches_array.each do |head_coach|
+    all_coaches_array(season).each do |head_coach|
       @game_teams.values.each do |game_team|
         if @games[game_team.game_id].season == season && game_team.head_coach == head_coach
           hash[head_coach] += 1
@@ -91,7 +102,7 @@ module SeasonStatables
 
   def wins_by_coach(season)
     hash = Hash.new
-    all_coaches_array.each do |head_coach|
+    all_coaches_array(season).each do |head_coach|
       hash[head_coach] = 0
       @game_teams.values.each do |game_team|
         if @games[game_team.game_id].season == season && game_team.head_coach == head_coach && game_team.won == "TRUE"
