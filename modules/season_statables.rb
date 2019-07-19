@@ -1,5 +1,60 @@
 module SeasonStatables
 
+  def all_seasons
+    @all_seasons ||= @games.values.map { |game| game.season }.uniq
+  end
+
+  def all_teams
+    @all_teams ||= @teams.values.map { |team| team.team_id }.uniq
+  end
+
+  def all_season_games(season)
+    @games.values.find_all { |value| value.season == season }
+  end
+  
+  def postseason_games(season)
+    @games.values.find_all { |value| value.season == season && value.type == "P" }
+  end
+
+  def game_teams_by_season(season)
+    game_ids = all_season_games(season).map { |game| game.game_id }
+    @game_teams.values.find_all { |value| game_ids.include?(value.game_id) }
+  end
+  
+  def game_teams_by_season_by_team(team_id, season)
+    game_teams_by_season(season).find_all { |game_team| game_team.team_id == team_id }
+  end
+
+  def game_teams_hash_by_team(season)
+    hash = {}
+    all_teams.each do |team_id|
+      hash[team_id] = []
+      hash[team_id] << game_teams_by_season(season)
+      hash[team_id].flatten!
+    end
+    hash
+  end
+
+  def hits_by_team(season)
+    hash = Hash.new(0)
+    game_teams_hash_by_team(season).each do |team_id, array_of_game_teams|
+      array_of_game_teams.each do |game_team|
+        hash[team_id] += game_team.hits if team_id == game_team.team_id
+      end
+    end
+    hash
+  end
+
+  def most_hits(season)
+    most_hits_stat = hits_by_team(season).max_by { |k, v| v }
+    @teams[most_hits_stat[0]].team_name
+  end
+
+  def fewest_hits(season)
+    most_hits_stat = hits_by_team(season).min_by { |k, v| v }
+    @teams[most_hits_stat[0]].team_name
+  end
+
   def regular_season_games_by_team(team_id, season)
     @games.values.find_all do |value|
       value.season == season &&
@@ -69,17 +124,17 @@ module SeasonStatables
     (season_wins_by_team(team_id, season).size / season_games_by_team(team_id, season).size.to_f).round(2)
   end
 
-  def all_season_games(season)
-    @games.values.find_all { |value| value.season == season }
-  end
-
-  def postseason_games(season)
-    @games.values.find_all { |value| value.season == season && value.type == "P" }
-  end
-
   def teams_that_made_the_postseason(season)
     home = postseason_games(season).map { |game| game.home_team_id }
     away = postseason_games(season).map { |game| game.away_team_id }
+    all_ids = home + away
+    all_ids.uniq!
+    all_ids.map { |team_id| @teams[team_id] }
+  end
+
+  def teams_in_a_season(season)
+    home = all_season_games(season).map { |game| game.home_team_id }
+    away = all_season_games(season).map { |game| game.away_team_id }
     all_ids = home + away
     all_ids.uniq!
     all_ids.map { |team_id| @teams[team_id] }
@@ -99,19 +154,9 @@ module SeasonStatables
     end.team_name
   end
 
-  def game_teams_by_season(season)
-    game_ids = all_season_games(season).map { |game| game.game_id }
-    @game_teams.values.find_all { |value| game_ids.include?(value.game_id) }
-  end
-
-  def game_teams_by_season_by_team(team_id, season)
-    game_teams_by_season(season).find_all { |game_team| game_team.team_id == team_id }
-  end
-
   def winning_game_teams_by_season_by_team(team_id, season)
     game_teams_by_season_by_team(team_id, season).find_all { |game_team| game_team.won? }
   end
-
 
   def coach_games_hash(season)
     coach_games = Hash.new
@@ -176,18 +221,6 @@ module SeasonStatables
     end.team_name
   end
 
-  def teams_in_a_season(season)
-    home = all_season_games(season).map { |game| game.home_team_id }
-    away = all_season_games(season).map { |game| game.away_team_id }
-    all_ids = home + away
-    all_ids.uniq!
-    all_ids.map { |team_id| @teams[team_id] }
-  end
-
-  def total_hits_by_season_by_team(team_id, season)
-    game_teams_by_season_by_team(team_id, season).sum { |game_team| game_team.hits }
-  end
-
   def most_hits(season)
      teams_in_a_season(season).max_by do |value|
        total_hits_by_season_by_team(value.team_id, season)
@@ -200,10 +233,9 @@ module SeasonStatables
     end.team_name
   end
 
-
-
-  # power_play_goal_percentage	Percentage of goals that were power play goals for the season (rounded to the nearest 100th)	Float
-
-
-
+  def power_play_goal_percentage(season)
+    power_play_goals = game_teams_by_season(season).sum { |game_team| game_team.power_play_goals }
+    total_goals = game_teams_by_season(season).sum { |game_team| game_team.goals }
+    (power_play_goals / total_goals.to_f ).round(2)
+  end 
 end
