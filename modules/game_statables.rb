@@ -1,5 +1,10 @@
 module GameStatables
 
+#re-used functions within methods
+#all_goals
+#end helper methods
+
+
   def highest_total_score
     all_goals = @games.map {|key,value| value.away_goals + value.home_goals}
     return all_goals.max
@@ -45,7 +50,7 @@ module GameStatables
     @games.values.each {|value| avg_goals_by_season[value.season] += value.home_goals.to_i + value.away_goals.to_i}
 
     count_of_games_by_season.each{|season, count| avg_goals_by_season[season] = (avg_goals_by_season[season] / count.to_f).round(2)}
-    
+
     avg_goals_by_season
   end
 

@@ -1,5 +1,102 @@
 module SeasonStatables
 
+  #regular methods
+  def biggest_bust(season)
+    teams_that_made_the_postseason(season).max_by do |value|
+      regular_season_win_percentage(value.team_id, season) -
+      postseason_win_percentage(value.team_id, season)
+    end.team_name
+  end
+
+  def biggest_surprise(season)
+    teams_that_made_the_postseason(season).max_by do |value|
+      postseason_win_percentage(value.team_id, season) -
+      regular_season_win_percentage(value.team_id, season)
+    end.team_name
+  end
+
+  #def winningest_coach(season)
+    # @game_teams.values.max_by do |value|
+       #(winning_game_teams_by_season_by_team(value.team_id, season).size /
+       #game_teams_by_season_by_team(value.team_id, season).size.to_f)
+     #end.head_coach
+   #end
+
+
+   # def worst_coach(season)
+   #   @game_teams.values.min_by do |value|
+   #     (winning_game_teams_by_season_by_team(value.team_id, season).size /
+   #     game_teams_by_season_by_team(value.team_id, season).size.to_f)
+   #   end.head_coach
+   # end
+
+   # def most_accurate_team(season)
+   #   @teams.values.max_by do |value|
+   #     total_shots_by_season_by_team(value.team_id, season) /
+   #     total_goals_by_season_by_team(value.team_id, season).to_f
+   #   end.team_name
+   # end
+   #
+   # def least_accurate_team(season)
+   #   @teams.values.min_by do |value|
+   #     total_shots_by_season_by_team(value.team_id, season) /
+   #     total_goals_by_season_by_team(value.team_id, season).to_f
+   #   end.team_name
+   # end
+
+   def most_hits(season)
+     @teams.values.max_by do |value|
+       total_hits_by_season_by_team(value.team_id, season)
+     end.team_name
+   end
+
+   # def fewest_hits(season)
+   #   @teams.values.min_by do |value|
+   #     total_hits_by_season_by_team(value.team_id, season)
+   #   end.team_name
+   # end
+
+   #end regular methods still need power play method
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#helper methods below
+
+
+
+#-----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   def regular_season_games_by_team(team_id, season)
     @games.values.find_all do |value|
       value.season == season &&
@@ -88,19 +185,8 @@ module SeasonStatables
     all_ids.map { |team_id| @teams[team_id] }
   end
 
-  def biggest_bust(season)
-    teams_that_made_the_postseason(season).max_by do |value|
-      regular_season_win_percentage(value.team_id, season) -
-      postseason_win_percentage(value.team_id, season)
-    end.team_name
-  end
 
-  def biggest_surprise(season)
-    teams_that_made_the_postseason(season).max_by do |value|
-      postseason_win_percentage(value.team_id, season) -
-      regular_season_win_percentage(value.team_id, season)
-    end.team_name
-  end
+
 
   def game_teams_by_season(season)
     game_ids = all_season_games(season).map { |game| game.game_id }
@@ -115,19 +201,6 @@ module SeasonStatables
     game_teams_by_season_by_team(team_id, season).find_all { |game_team| game_team.won? }
   end
 
-  # def winningest_coach(season)
-  #   @game_teams.values.max_by do |value|
-  #     (winning_game_teams_by_season_by_team(value.team_id, season).size /
-  #     game_teams_by_season_by_team(value.team_id, season).size.to_f)
-  #   end.head_coach
-  # end
-  #
-  # def worst_coach(season)
-  #   @game_teams.values.min_by do |value|
-  #     (winning_game_teams_by_season_by_team(value.team_id, season).size /
-  #     game_teams_by_season_by_team(value.team_id, season).size.to_f)
-  #   end.head_coach
-  # end
 
   def total_shots_by_season_by_team(team_id, season)
     game_teams_by_season_by_team(team_id, season).sum { |game_team| game_team.shots }
@@ -140,35 +213,6 @@ module SeasonStatables
   def total_hits_by_season_by_team(team_id, season)
     game_teams_by_season_by_team(team_id, season).sum { |game_team| game_team.hits }
   end
-
-  # def most_accurate_team(season)
-  #   @teams.values.max_by do |value|
-  #     total_shots_by_season_by_team(value.team_id, season) /
-  #     total_goals_by_season_by_team(value.team_id, season).to_f
-  #   end.team_name
-  # end
-  #
-  # def least_accurate_team(season)
-  #   @teams.values.min_by do |value|
-  #     total_shots_by_season_by_team(value.team_id, season) /
-  #     total_goals_by_season_by_team(value.team_id, season).to_f
-  #   end.team_name
-  # end
-
-  def most_hits(season)
-    @teams.values.max_by do |value|
-      total_hits_by_season_by_team(value.team_id, season)
-    end.team_name
-  end
-
-  # def fewest_hits(season)
-  #   @teams.values.min_by do |value|
-  #     total_hits_by_season_by_team(value.team_id, season)
-  #   end.team_name
-  # end
-
-
-
 
   # power_play_goal_percentage	Percentage of goals that were power play goals for the season (rounded to the nearest 100th)	Float
 
