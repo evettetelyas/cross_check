@@ -11,7 +11,7 @@ module SeasonStatables
   def all_season_games(season)
     @games.values.find_all { |value| value.season == season }
   end
-  
+
   def postseason_games(season)
     @games.values.find_all { |value| value.season == season && value.type == "P" }
   end
@@ -20,7 +20,7 @@ module SeasonStatables
     game_ids = all_season_games(season).map { |game| game.game_id }
     @game_teams.values.find_all { |value| game_ids.include?(value.game_id) }
   end
-  
+
   def game_teams_by_season_by_team(team_id, season)
     game_teams_by_season(season).find_all { |game_team| game_team.team_id == team_id }
   end
@@ -195,6 +195,14 @@ module SeasonStatables
     max[0]
   end
 
+  def all_games_played_by_season(team_id)
+    all_season_games = Hash.new
+    all_seasons_ary.each do |season|
+      all_season_games[season] = @games.values.count {|g| g.season == season && (g.home_team_id == team_id || g.away_team_id == team_id)}
+    end
+    all_season_games
+  end
+
   def total_shots_by_season_by_team(team_id, season)
     game_teams_by_season_by_team(team_id, season).sum { |game_team| game_team.shots }
   end
@@ -237,5 +245,5 @@ module SeasonStatables
     power_play_goals = game_teams_by_season(season).sum { |game_team| game_team.power_play_goals }
     total_goals = game_teams_by_season(season).sum { |game_team| game_team.goals }
     (power_play_goals / total_goals.to_f ).round(2)
-  end 
+  end
 end

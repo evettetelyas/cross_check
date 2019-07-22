@@ -1,13 +1,15 @@
 module GameStatables
 
+  def all_goals
+    @games.map {|key,value| value.away_goals + value.home_goals}
+  end
+
   def highest_total_score
-    all_goals = @games.map {|key,value| value.away_goals + value.home_goals}
-    return all_goals.max
+    all_goals.max
   end
 
   def lowest_total_score
-    all_goals = @games.map {|key,value| value.away_goals + value.home_goals}
-    return all_goals.min
+    all_goals.min
   end
 
   def biggest_blowout
@@ -36,7 +38,6 @@ module GameStatables
   end
 
   def average_goals_per_game
-    all_goals = @games.map {|key,value| value.away_goals + value.home_goals}
     (all_goals.sum.to_f / @games.count).round(2)
   end
 
@@ -45,7 +46,7 @@ module GameStatables
     @games.values.each {|value| avg_goals_by_season[value.season] += value.home_goals.to_i + value.away_goals.to_i}
 
     count_of_games_by_season.each{|season, count| avg_goals_by_season[season] = (avg_goals_by_season[season] / count.to_f).round(2)}
-    
+
     avg_goals_by_season
   end
 

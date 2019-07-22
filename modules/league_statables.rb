@@ -5,76 +5,76 @@ module LeagueStatables
     end
 
   # reused in total_games_by_team, lowest_and_highest_scoring_home_team
-    def home_goals_by_team
-      hash = Hash.new(0)
-      @teams.values.each do |team|
-        @games.values.each do |game|
-          if game.home_team_id == team.team_id
-            hash[team.team_id] += game.home_goals
-          end
+  def home_goals_by_team
+    hash = Hash.new(0)
+    @teams.values.each do |team|
+      @games.values.each do |game|
+        if game.home_team_id == team.team_id
+          hash[team.team_id] += game.home_goals
         end
       end
-      @home_goals_by_team ||= hash
     end
+    @home_goals_by_team ||= hash
+  end
 
   # reused in total_goals_by_team, lowest_and_highest_scoring_visitor
-    def away_goals_by_team
-      hash = Hash.new(0)
-      @teams.values.each do |team|
-        @games.values.each do |game|
-          if game.away_team_id == team.team_id
-            hash[team.team_id] += game.away_goals
-          end
+  def away_goals_by_team
+    hash = Hash.new(0)
+    @teams.values.each do |team|
+      @games.values.each do |game|
+        if game.away_team_id == team.team_id
+          hash[team.team_id] += game.away_goals
         end
       end
-      @away_goals_by_team ||= hash
     end
+    @away_goals_by_team ||= hash
+  end
 
   # reused in worst_and_best_offense
-    def total_goals_by_team
-      @total_goals_by_team ||= home_goals_by_team.merge(away_goals_by_team) { |team_id, home_goals, away_goals| home_goals + away_goals }
-    end
+  def total_goals_by_team
+    @total_goals_by_team ||= home_goals_by_team.merge(away_goals_by_team) { |team_id, home_goals, away_goals| home_goals + away_goals }
+  end
 
   # reused in worst_and_best_defense
-    def total_goals_allowed_by_team
-      hash = Hash.new(0)
-      @teams.values.each do |team|
-        @games.values.each do |game|
-          if game.away_team_id == team.team_id
-            hash[team.team_id] += game.home_goals
-          elsif game.home_team_id == team.team_id
-            hash[team.team_id] += game.away_goals
-          end
+  def total_goals_allowed_by_team
+    hash = Hash.new(0)
+    @teams.values.each do |team|
+      @games.values.each do |game|
+        if game.away_team_id == team.team_id
+          hash[team.team_id] += game.home_goals
+        elsif game.home_team_id == team.team_id
+          hash[team.team_id] += game.away_goals
         end
       end
-      @total_goals_allowed_by_team ||= hash
     end
+    @total_goals_allowed_by_team ||= hash
+  end
 
   # reused in total_games_by_team, lowest_and_highest_scoring_home_team
-    def home_games_by_team
-      hash = Hash.new(0)
-      @teams.values.each do |team|
-        @games.values.each do |game|
-          if game.home_team_id == team.team_id
-            hash[team.team_id] += 1
-          end
+  def home_games_by_team
+    hash = Hash.new(0)
+    @teams.values.each do |team|
+      @games.values.each do |game|
+        if game.home_team_id == team.team_id
+          hash[team.team_id] += 1
         end
       end
-      @home_games_by_team ||= hash
     end
+    @home_games_by_team ||= hash
+  end
 
   # reused in total_games_by_team, lowest_and_highest_scoring_visitor
-    def away_games_by_team
-      hash = Hash.new(0)
-      @teams.values.each do |team|
-        @games.values.each do |game|
-          if game.away_team_id == team.team_id
-            hash[team.team_id] += 1
-          end
+  def away_games_by_team
+    hash = Hash.new(0)
+    @teams.values.each do |team|
+      @games.values.each do |game|
+        if game.away_team_id == team.team_id
+          hash[team.team_id] += 1
         end
       end
-      @away_games_by_team ||= hash
     end
+    @away_games_by_team ||= hash
+  end
 
   # reused in worst_and_best_offense, worst_and_best_defense, winningest_team
   def total_games_by_team
