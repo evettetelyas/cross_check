@@ -1,5 +1,6 @@
 require './test/test_helper'
 
+
 class DummyGameTest < Minitest::Test
 
   def setup
