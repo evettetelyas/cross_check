@@ -316,12 +316,19 @@ def season_win_percentages_type
   assert_equal expected_2, @stat_tracker.season_wins_percentages_type("3", "P")
 end
 
-def test_goals_scored_per_season_type(team_id, post_reg)
+def test_goals_scored_per_season_type
   expected_1= {"20142015"=>4, "20122013"=>7}
   expected_2 = {"20142015"=>4, "20122013"=>1}
   assert_equal expected_1, @stat_tracker.goals_scored_per_season_type("3", "R")
   assert_equal expected_2, @stat_tracker.goals_scored_per_season_type("3", "P")
 end
+
+ def test_goals_allowed_per_season_type
+   expected_1 = {"20142015"=>7, "20122013"=>9}
+   expected_2 = {"20142015"=>2, "20122013"=>2}
+   assert_equal expected_1, @stat_tracker.goals_allowed_per_season_type("3", "R")
+   assert_equal expected_2, @stat_tracker.goals_allowed_per_season_type("3", "P")
+ end
 
 
 #STILL NEED HEAD_TO_HEAD AND SEASONAL_SUMMARY
