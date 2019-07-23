@@ -1,13 +1,5 @@
 module SeasonStatables
 
-  def all_seasons_array
-    seasons = []
-    @games.values.each do |game|
-      seasons << game.season
-    end
-    @all_seasons_array ||= seasons.uniq!
-  end
-
   def regular_season_games_by_team(season)
     hash = Hash.new(0)
     @teams.values.each do |team|
@@ -114,13 +106,13 @@ module SeasonStatables
   end
 
   def winningest_coach(season)
-    array = wins_by_coach(season).merge(games_by_coach(season)) { |head_coach, wins, games| wins / games.to_f }
+    array = games_by_coach(season).merge(wins_by_coach(season)) { |head_coach, games, wins| wins / games.to_f }
       .max_by { |head_coach, win_pct| win_pct }
     array[0]
   end
 
   def worst_coach(season)
-    array = wins_by_coach(season).merge(games_by_coach(season)) { |head_coach, wins, games| wins / games.to_f }
+    array = games_by_coach(season).merge(wins_by_coach(season)) { |head_coach, games, wins| wins / games.to_f }
       .min_by { |head_coach, win_pct| win_pct }
     array[0]
   end
