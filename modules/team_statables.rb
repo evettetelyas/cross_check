@@ -31,22 +31,16 @@ module TeamStatables
     fewest_goals_stat[1]
   end
 
-  def favorite_opponent_stats(team_id)
-   opponent_games_won(team_id).merge(opponent_games_played(team_id)) {|opponent, lost, played| lost / played.to_f}
-  end
-
   def favorite_opponent(team_id)
-    worst_team = favorite_opponent_stats(team_id).max_by {|k,v| v}
-    @teams[worst_team[0]].team_name
-  end
-
-  def rival_opponent_stats(team_id)
-   opponent_games_lost(team_id).merge(opponent_games_played(team_id)) {|opponent, lost, played| lost / played.to_f}
+  percentages = opponent_games_won(team_id).merge(opponent_games_played(team_id)) {|opponent, lost, played| lost / played.to_f}
+  worst = percentages.max_by {|k,v| v}
+  @teams[worst[0]].team_name
   end
 
   def rival(team_id)
-    best_team = rival_opponent_stats(team_id).max_by {|k,v| v}
-    @teams[best_team[0]].team_name
+   percentages = opponent_games_lost(team_id).merge(opponent_games_played(team_id)) {|opponent, lost, played| lost / played.to_f}
+   best = percentages.max_by {|k,v| v}
+   @teams[best[0]].team_name
   end
 
   def biggest_team_blowout(team_id)
@@ -64,7 +58,7 @@ module TeamStatables
   def seasonal_summary(team_id)
     post_season_games = Hash.new(0)
     all_seasons_ary.each do |season|
-      post_season_games[season] = {postseason: Hash.new, regular_season: Hash.new}
+      post_season_games[season] = {postseason: Hash.new(0), regular_season: Hash.new(0)}
     end
     post_season_games.each do |season, stats|
       post_season_games[season][:postseason][:win_percentage] = season_win_percentages_type(team_id, "P")[season]

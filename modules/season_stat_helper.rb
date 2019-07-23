@@ -39,5 +39,5 @@ module SeasonStatHelper
     seazy = games_won_per_season_type(team_id, post_reg).merge(games_per_season_type(team_id, post_reg)) {|season, won, played| won / played.to_f}
     seazy.transform_values{|v| v.round(2)}
   end
-
+  
 end
