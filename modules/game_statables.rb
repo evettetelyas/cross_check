@@ -43,7 +43,7 @@ module GameStatables
 
   def average_goals_by_season
     avg_goals_by_season = Hash.new(0)
-    @games.values.each {|value| avg_goals_by_season[value.season] += value.home_goals.to_i + value.away_goals.to_i}
+    @games.values.each {|value| avg_goals_by_season[value.season] += value.home_goals + value.away_goals}
 
     count_of_games_by_season.each{|season, count| avg_goals_by_season[season] = (avg_goals_by_season[season] / count.to_f).round(2)}
 
