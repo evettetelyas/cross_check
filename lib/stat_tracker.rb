@@ -6,6 +6,10 @@ require_relative './game_team'
 require_relative '../modules/game_statables'
 require_relative '../modules/league_statables'
 require_relative '../modules/team_statables'
+require_relative '../modules/team_stat_helper'
+require_relative '../modules/season_stat_helper'
+require_relative '../modules/game_stat_helper'
+require_relative '../modules/stat_tracker_helper'
 require_relative '../modules/season_statables'
 
 class StatTracker
@@ -13,6 +17,10 @@ class StatTracker
   include LeagueStatables
   include TeamStatables
   include SeasonStatables
+  include TeamStatHelper
+  include SeasonStatHelper
+  include GameStatHelper
+  include StatTrackerHelper
   attr_reader :games, :teams, :game_teams
 
   def initialize(games = {}, teams = {}, game_teams = {})

@@ -4,7 +4,6 @@ module LeagueStatables
     @teams.count
   end
 
-# reused in total_games_by_team, lowest_and_highest_scoring_home_team
   def home_goals_by_team
     hash = Hash.new(0)
     @teams.values.each do |team|
@@ -17,7 +16,6 @@ module LeagueStatables
     @home_goals_by_team ||= hash
   end
 
-# reused in total_goals_by_team, lowest_and_highest_scoring_visitor
   def away_goals_by_team
     hash = Hash.new(0)
     @teams.values.each do |team|
@@ -30,12 +28,10 @@ module LeagueStatables
     @away_goals_by_team ||= hash
   end
 
-# reused in worst_and_best_offense
   def total_goals_by_team
     @total_goals_by_team ||= home_goals_by_team.merge(away_goals_by_team) { |team_id, home_goals, away_goals| home_goals + away_goals }
   end
-
-# reused in worst_and_best_defense
+  
   def total_goals_allowed_by_team
     hash = Hash.new(0)
     @teams.values.each do |team|
@@ -50,7 +46,6 @@ module LeagueStatables
     @total_goals_allowed_by_team ||= hash
   end
 
-# reused in total_games_by_team, lowest_and_highest_scoring_home_team
   def home_games_by_team
     hash = Hash.new(0)
     @teams.values.each do |team|
@@ -63,7 +58,6 @@ module LeagueStatables
     @home_games_by_team ||= hash
   end
 
-# reused in total_games_by_team, lowest_and_highest_scoring_visitor
   def away_games_by_team
     hash = Hash.new(0)
     @teams.values.each do |team|
@@ -76,12 +70,10 @@ module LeagueStatables
     @away_games_by_team ||= hash
   end
 
-# reused in worst_and_best_offense, worst_and_best_defense, winningest_team
-def total_games_by_team
-  @total_games_by_team ||= home_games_by_team.merge(away_games_by_team) { |team_id, home_games, away_games| home_games + away_games }
-end
+  def total_games_by_team
+    @total_games_by_team ||= home_games_by_team.merge(away_games_by_team) { |team_id, home_games, away_games| home_games + away_games }
+  end
 
-# reused in best_offense, worst_offense
   def worst_and_best_offense
     array = total_games_by_team.merge(total_goals_by_team) { |team_id, games, goals| goals / games.to_f}
       .minmax_by { |team_id, goals_per_game| goals_per_game }
@@ -96,7 +88,6 @@ end
     @teams[worst_and_best_offense[0][0]].team_name
   end
 
-# reused in best_offense, worst_offense
   def best_and_worst_defense
     array = total_games_by_team.merge(total_goals_allowed_by_team) { |team_id, games, goals_allowed| goals_allowed / games.to_f }
       .minmax_by { |team_id, goals_allowed_per_game| goals_allowed_per_game }
@@ -111,7 +102,6 @@ end
     @teams[best_and_worst_defense[1][0]].team_name
   end
 
-# reused in highest_scoring_visitor, lowest_scoring_visitor
   def lowest_and_highest_scoring_visitor
     array = away_games_by_team.merge(away_goals_by_team) { |team_id, away_games, away_goals| away_goals / away_games.to_f }
       .minmax_by { |team_id, away_goals_per_game| away_goals_per_game }
@@ -126,7 +116,6 @@ end
     @teams[lowest_and_highest_scoring_visitor[0][0]].team_name
   end
 
-# reused in highest_scoring_home_team, lowest_scoring_home_team
   def lowest_and_highest_scoring_home_team
     array = home_games_by_team.merge(home_goals_by_team) { |team_id, home_games, home_goals| home_goals / home_games.to_f }
       .minmax_by { |team_id, home_goals_per_game| home_goals_per_game }
@@ -141,7 +130,6 @@ end
     @teams[lowest_and_highest_scoring_home_team[0][0]].team_name
   end
 
-# reused in total_wins_by_team
   def home_wins_by_team
     hash = Hash.new(0)
     @teams.values.each do |team|
@@ -154,7 +142,6 @@ end
     @home_wins_by_team ||= hash
   end
 
-# reused in total_wins_by_team
   def away_wins_by_team
     hash = Hash.new(0)
     @teams.values.each do |team|
@@ -167,7 +154,6 @@ end
     @away_wins_by_team ||= hash
   end
 
-# reused in winningest_team
   def total_wins_by_team
     @total_wins_by_team ||= home_wins_by_team.merge(away_wins_by_team) { |team_id, home_wins, away_wins| home_wins + away_wins }
   end
@@ -178,12 +164,10 @@ end
     @teams[array[0]].team_name
   end
 
-# reused in best_fans, worst_fans
   def home_win_percentage_by_team
     @home_win_percentage_by_team ||= home_wins_by_team.merge(home_games_by_team) { |team_id, home_wins, home_games| home_wins / home_games.to_f }
   end
 
-# reused in best_fans, worst_fans
   def away_win_percentage_by_team
     @away_win_percentage_by_team ||= away_wins_by_team.merge(away_games_by_team) { |team_id, away_wins, away_games| away_wins / away_games.to_f }
   end

@@ -1,5 +1,5 @@
 module TeamStatables
-
+  
   def team_info(team_id)
     hash = Hash.new
     @teams[team_id].instance_variables.each do |var|
@@ -247,4 +247,4 @@ module TeamStatables
     stat = goals_allowed_per_season_type(team_id, post_reg).merge(games_per_season_type(team_id, post_reg)) {|season, goals, games| goals / games.to_f}
     stat.transform_values{|v| v.round(2)}
   end
-end
+end 
