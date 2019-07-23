@@ -105,56 +105,6 @@ module TeamStatHelper
     opponent_blowout_stats
   end
 
-  # def coyote_data(team_id)
-  #   coyote_stats = [0,0] #[0] = games won, [1] = total games
-  #   @games.values.each do |game|
-  #     if @teams[game.home_team_id].franchise_id == "28" &&
-  #       game.away_team_id == team_id &&
-  #       game.away_goals > game.home_goals
-  #       coyote_stats[0] += 1
-  #     elsif @teams[game.away_team_id].franchise_id == "28" &&
-  #       game.home_team_id == team_id &&
-  #       game.away_goals < game.home_goals
-  #       coyote_stats[0] += 1
-  #     end
-  #     if @teams[game.home_team_id].franchise_id == "28" &&
-  #       game.away_team_id == team_id
-  #       coyote_stats[1] += 1
-  #     elsif @teams[game.away_team_id].franchise_id == "28" &&
-  #       game.home_team_id == team_id
-  #       coyote_stats[1] += 1
-  #     end
-  #   end
-  #   coyote_stats
-  # end
-  #
-  # def all_53_coyote_games_against_18
-  #   coyote_games = [0,0] #[0] = wins, [1] = all games
-  #   @games.values.each do |game|
-  #     if (game.home_team_id == "53" && game.away_team_id == "18") || (game.away_team_id == "53" && game.home_team_id == "18")
-  #       coyote_games[1] += 1
-  #     end
-  #     if (game.home_team_id == "53" && game.away_team_id == "18" && game.away_goals > game.home_goals) || (game.away_team_id == "53" && game.home_team_id == "18" && game.home_goals > game.away_goals)
-  #       coyote_games[0] += 1
-  #     end
-  #   end
-  #   coyote_games
-  #   # (coyote_games[0]/coyote_games[1].to_f).round(2) = .67
-  # end
-  #
-  # def all_27_coyote_games_against_18
-  #   coyote_games = [0,0] #[0] = wins, [1] = all games
-  #   @games.values.each do |game|
-  #     if (game.home_team_id == "27" && game.away_team_id == "18") || (game.away_team_id == "27" && game.home_team_id == "18")
-  #       coyote_games[1] += 1
-  #     end
-  #     if (game.home_team_id == "27" && game.away_team_id == "18" && game.away_goals > game.home_goals) || (game.away_team_id == "27" && game.home_team_id == "18" && game.home_goals > game.away_goals)
-  #       coyote_games[0] += 1
-  #     end
-  #   end
-  #   coyote_games
-  # end
-
   def head_to_head_hash(team_id)
     opponent_stats = Hash.new(0)
     team_name_ary.each do |team_name|

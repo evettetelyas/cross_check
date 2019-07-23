@@ -1,59 +1,5 @@
 module SeasonStatables
 
-  # def regular_season_games_by_team(season)
-  #   hash = Hash.new(0)
-  #   @teams.values.each do |team|
-  #     @games.values.each do |game|
-  #       if (game.away_team_id == team.team_id || game.home_team_id == team.team_id) && game.season == season && game.type == "R"
-  #         hash[team.team_id] += 1
-  #       end
-  #     end
-  #   end
-  #   hash
-  # end
-
-  # def regular_season_wins_by_team(season)
-  #   hash = Hash.new
-  #   @teams.values.each do |team|
-  #     hash[team.team_id] = 0
-  #     @games.values.each do |game|
-  #       if ((game.away_team_id == team.team_id && game.away_goals > game.home_goals) || (game.home_team_id == team.team_id && game.home_goals > game.away_goals)) && game.season == season && game.type == "R"
-  #         hash[team.team_id] += 1
-  #       end
-  #     end
-  #   end
-  #   hash
-  # end
-
-  # def regular_season_win_percentage(season)
-  #   regular_season_wins_by_team(season).merge(regular_season_games_by_team(season)) { |team_id, wins, games| wins / games.to_f }
-  # end
-
-  # def postseason_games_by_team(season)
-  #   hash = Hash.new(0)
-  #   @teams.values.each do |team|
-  #     @games.values.each do |game|
-  #       if (game.away_team_id == team.team_id || game.home_team_id == team.team_id) && game.season == season && game.type == "P"
-  #         hash[team.team_id] += 1
-  #       end
-  #     end
-  #   end
-  #   hash
-  # end
-  #
-  # def postseason_wins_by_team(season)
-  #   hash = Hash.new
-  #   @teams.values.each do |team|
-  #     hash[team.team_id] = 0
-  #     @games.values.each do |game|
-  #       if ((game.away_team_id == team.team_id && game.away_goals > game.home_goals) || (game.home_team_id == team.team_id && game.home_goals > game.away_goals)) && game.season == season && game.type == "P"
-  #         hash[team.team_id] += 1
-  #       end
-  #     end
-  #   end
-  #   hash
-  # end
-
   def regular_season_win_percentage(season)
     reg_szn_wins = Hash.new
     @teams.values.each do |team|
@@ -61,10 +7,6 @@ module SeasonStatables
     end
     reg_szn_wins
   end
-
-  # def postseason_win_percentage(season)
-  #   postseason_wins_by_team(season).merge(postseason_games_by_team(season)) { |team_id, wins, games| wins / games.to_f }
-  # end
 
   def postseason_win_percentage(season)
     post_szn_wins = Hash.new
