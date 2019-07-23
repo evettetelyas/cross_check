@@ -293,6 +293,19 @@ def test_seasonal_summary
   assert_equal expected, @stat_tracker.seasonal_summary("3")
 end
 
+def test_games_per_season_type
+  expected_1= {"20142015"=>2, "20122013"=>1}
+  expected_2= {"20142015"=>2, "20122013"=>2}
+  assert_equal expected_1, @stat_tracker.games_per_season_type("3", "P")
+  assert_equal expected_2, @stat_tracker.games_per_season_type("3", "R")
+end
+
+
+# def test_games_won_per_season_type (team_id, post_reg)
+#
+#
+# end
+
 #STILL NEED HEAD_TO_HEAD AND SEASONAL_SUMMARY
 #END ITERATION 4 TEAM STATABLES MODULE TESTS
 
