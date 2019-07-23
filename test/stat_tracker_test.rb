@@ -330,12 +330,21 @@ end
    assert_equal expected_2, @stat_tracker.goals_allowed_per_season_type("3", "P")
  end
 
- def test_goals_allowed_per_season_type
+ def test_average_goals_scored_season_type
    expected_1 = {"20142015"=>2.0, "20122013"=>3.5}
    expected_2 = {"20142015"=>2.0, "20122013"=>1.0}
    assert_equal expected_1, @stat_tracker.average_goals_scored_season_type("3", "R")
    assert_equal expected_2, @stat_tracker.average_goals_scored_season_type("3", "P")
  end
+
+ def test_average_goals_allowed_season_type
+   expected_1 = {"20142015"=>3.5, "20122013"=>4.5}
+   expected_2 = {"20142015"=>1.0, "20122013"=>2.0}
+   assert_equal expected_1, @stat_tracker.average_goals_allowed_season_type("3", "R")
+   assert_equal expected_2, @stat_tracker.average_goals_allowed_season_type("3", "P")
+ end
+
+ 
 
 
 #STILL NEED HEAD_TO_HEAD AND SEASONAL_SUMMARY
