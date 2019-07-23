@@ -26,8 +26,12 @@ game_teams_path = './data/game_teams_stats.csv'
 dummy_game_path = './dummy_data/dummy_game.csv'
 dummy_team_path = './dummy_data/dummy_team_info.csv'
 dummy_game_teams_path = './dummy_data/dummy_game_team_stats.csv'
-
 stat_tracker = StatTracker.from_csv(locations) %>
+
+<a href='game_stats.html'>Game Stats Page</a>
+<a href='team_stats.html'>Team Stats Page</a>
+
+
 <h3> Game Stats </h3>
 <h4> Highest Total Score: <%= stat_tracker.highest_total_score %> </h4>
 <h4> Lowest Total Score: <%= stat_tracker.lowest_total_score %> </h4>

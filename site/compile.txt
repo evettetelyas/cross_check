@@ -1,0 +1,12 @@
+compile your different files so they will link data
+then run the index command
+
+comps =>
+erb site/index.html.erb > site/index.html
+erb site/game_stats.html.erb > site/game_stats.html
+erb site/team_stats.html.erb > site/team_stats.html
+
+
+
+then run =>
+open site/index.html

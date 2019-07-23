@@ -1,0 +1,43 @@
+
+<!--comment  -->
+<!--(1st do this to compile) erb site/game_stats.html.erb > site/game_stats.html
+ (then do this to open both from cross_check dir) open site/index.html-->
+ <% require './lib/stat_tracker.rb' %>
+
+ <% game_path = './data/game.csv'
+ team_path = './data/team_info.csv'
+ game_teams_path = './data/game_teams_stats.csv'
+ dummy_game_path = './dummy_data/dummy_game.csv'
+ dummy_team_path = './dummy_data/dummy_team_info.csv'
+ dummy_game_teams_path = './dummy_data/dummy_game_team_stats.csv'
+
+ locations = {
+   games: game_path,
+   teams: team_path,
+   game_teams: game_teams_path,
+   dummy_games: dummy_game_path,
+   dummy_teams: dummy_team_path,
+   dummy_game_teams: dummy_game_teams_path
+ }
+ %>
+
+ <% game_path = './data/game.csv'
+ team_path = './data/team_info.csv'
+ game_teams_path = './data/game_teams_stats.csv'
+ dummy_game_path = './dummy_data/dummy_game.csv'
+ dummy_team_path = './dummy_data/dummy_team_info.csv'
+ dummy_game_teams_path = './dummy_data/dummy_game_team_stats.csv'
+ stat_tracker = StatTracker.from_csv(locations) %>
+
+ <a href='index.html'>Home Page</a>
+
+
+
+ <h3> Game Stats </h3>
+ <h4> Highest Total Score: <%= stat_tracker.highest_total_score %> </h4>
+ <h4> Lowest Total Score: <%= stat_tracker.lowest_total_score %> </h4>
+ <h4> Biggest Blowout: <%= stat_tracker.biggest_blowout %> </h4>
+ <h4> Percentage of Home Wins: <%= stat_tracker.percentage_home_wins %> </h4>
+ <h4> Percentage of Visitor Wins: <%= stat_tracker.percentage_visitor_wins %> </h4>
+ <br>
+ <hr>

@@ -1,0 +1,47 @@
+
+<!--comment  -->
+<!--(1st do this to compile) erb site/team_stats.html.erb > site/team_stats.html
+ (then do this to open both from cross_check dir) open site/index.html-->
+ <% require './lib/stat_tracker.rb' %>
+
+ <% game_path = './data/game.csv'
+ team_path = './data/team_info.csv'
+ game_teams_path = './data/game_teams_stats.csv'
+ dummy_game_path = './dummy_data/dummy_game.csv'
+ dummy_team_path = './dummy_data/dummy_team_info.csv'
+ dummy_game_teams_path = './dummy_data/dummy_game_team_stats.csv'
+
+ locations = {
+   games: game_path,
+   teams: team_path,
+   game_teams: game_teams_path,
+   dummy_games: dummy_game_path,
+   dummy_teams: dummy_team_path,
+   dummy_game_teams: dummy_game_teams_path
+ }
+ %>
+
+ <% game_path = './data/game.csv'
+ team_path = './data/team_info.csv'
+ game_teams_path = './data/game_teams_stats.csv'
+ dummy_game_path = './dummy_data/dummy_game.csv'
+ dummy_team_path = './dummy_data/dummy_team_info.csv'
+ dummy_game_teams_path = './dummy_data/dummy_game_team_stats.csv'
+ stat_tracker = StatTracker.from_csv(locations) %>
+
+ <a href='index.html'>Home Page</a>
+
+ <h3> Team Stats </h3>
+ <h4> Team Info: <%= stat_tracker.team_info("3") %> </h4>
+ <h4> Best Season: <%= stat_tracker.best_season("3") %> </h4>
+ <h4> Worst Season: <%= stat_tracker.worst_season("3") %> </h4>
+ <h4> Average Win Percentage: <%= stat_tracker.average_win_percentage("3")%> </h4>
+ <h4> Most Goals Scored: <%= stat_tracker.most_goals_scored("3") %> </h4>
+ <h4> Fewest Goals Scored: <%= stat_tracker.fewest_goals_scored("3") %> </h4>
+ <h4> Favorite Opponent: <%= stat_tracker.favorite_opponent("3") %> </h4>
+ <h4> Rival: <%= stat_tracker.rival("3") %> </h4>
+ <h4> Biggest Team Blowout: <%= stat_tracker.biggest_team_blowout("3") %> </h4>
+ <h4> Worst Loss: <%= stat_tracker.worst_loss("3") %> </h4>
+ <h4> Head to Head: <%= stat_tracker.head_to_head("3") %> </h4>
+ <h4> Seasonal Summary: <%= stat_tracker.seasonal_summary("3") %> </h4>
+ <br>
