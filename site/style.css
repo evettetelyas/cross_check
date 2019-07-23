@@ -1,0 +1,9 @@
+#test{
+  border-style: solid;
+  border-color:black;
+  border-width: 2px;
+  border-length: 300px;
+  background-color: #34ebe5;
+  opacity: 0.5;
+  text-align: center; 
+}
