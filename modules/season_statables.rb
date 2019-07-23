@@ -161,5 +161,4 @@ module SeasonStatables
     hash = power_play_goals_by_season.merge(goals_by_season) { |season, ppg, goals| (ppg / goals.to_f ).round(2) }
     hash[season]
   end
-
 end
