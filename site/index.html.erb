@@ -20,18 +20,18 @@ locations = {
 }
 %>
 
-<% game_path = './data/game.csv'
-team_path = './data/team_info.csv'
-game_teams_path = './data/game_teams_stats.csv'
-dummy_game_path = './dummy_data/dummy_game.csv'
-dummy_team_path = './dummy_data/dummy_team_info.csv'
-dummy_game_teams_path = './dummy_data/dummy_game_team_stats.csv'
-stat_tracker = StatTracker.from_csv(locations) %>
+<%stat_tracker = StatTracker.from_csv(locations) %>
+
+<h1> Home Page </h1>
 
 <a href='game_stats.html'>Game Stats Page</a>
+<a href='league_stats.html'>League Stats Page</a>
 <a href='team_stats.html'>Team Stats Page</a>
+<a href='season_stats.html'>Season Stats Page</a>
 
 
+
+<!--
 <h3> Game Stats </h3>
 <h4> Highest Total Score: <%= stat_tracker.highest_total_score %> </h4>
 <h4> Lowest Total Score: <%= stat_tracker.lowest_total_score %> </h4>
@@ -39,6 +39,9 @@ stat_tracker = StatTracker.from_csv(locations) %>
 <h4> Percentage of Home Wins: <%= stat_tracker.percentage_home_wins %> </h4>
 <h4> Percentage of Visitor Wins: <%= stat_tracker.percentage_visitor_wins %> </h4>
 <br>
+-->
+
+<!--
 <hr>
 <h3> League Stats </h3>
 <h4> Count of Teams: <%= stat_tracker.count_of_teams %> </h4>
@@ -54,6 +57,8 @@ stat_tracker = StatTracker.from_csv(locations) %>
 <h4> Worst Fans: <%= stat_tracker.worst_fans %> </h4>
 <br>
 <hr>
+-->
+<!--
 <h3> Team Stats </h3>
 <h4> Team Info: <%= stat_tracker.team_info("3") %> </h4>
 <h4> Best Season: <%= stat_tracker.best_season("3") %> </h4>
@@ -68,6 +73,8 @@ stat_tracker = StatTracker.from_csv(locations) %>
 <h4> Head to Head: <%= stat_tracker.head_to_head("3") %> </h4>
 <h4> Seasonal Summary: <%= stat_tracker.seasonal_summary("3") %> </h4>
 <br>
+-->
+<!--
 <hr>
 <h3> Season Stats </h3>
 <h4> Biggest Bust: <%= stat_tracker.biggest_bust("20122013") %> </h4>
@@ -81,3 +88,4 @@ stat_tracker = StatTracker.from_csv(locations) %>
 <h4> Power Play Goal Percentage: <%= stat_tracker.power_play_goal_percentage("20122013") %> </h4>
 <br>
 <hr>
+-->

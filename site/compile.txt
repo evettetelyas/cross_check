@@ -4,7 +4,9 @@ then run the index command
 comps =>
 erb site/index.html.erb > site/index.html
 erb site/game_stats.html.erb > site/game_stats.html
+erb site/league_stats.html.erb > site/league_stats.html
 erb site/team_stats.html.erb > site/team_stats.html
+erb site/season_stats.html.erb > site/season_stats.html
 
 
 

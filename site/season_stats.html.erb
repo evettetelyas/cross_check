@@ -1,0 +1,38 @@
+<!--comment  -->
+<!--(1st do this to compile) erb site/season.html.erb > site/season.html
+ (then do this to open both from cross_check dir) open site/index.html-->
+<% require './lib/stat_tracker.rb' %>
+
+<% game_path = './data/game.csv'
+team_path = './data/team_info.csv'
+game_teams_path = './data/game_teams_stats.csv'
+dummy_game_path = './dummy_data/dummy_game.csv'
+dummy_team_path = './dummy_data/dummy_team_info.csv'
+dummy_game_teams_path = './dummy_data/dummy_game_team_stats.csv'
+
+locations = {
+  games: game_path,
+  teams: team_path,
+  game_teams: game_teams_path,
+  dummy_games: dummy_game_path,
+  dummy_teams: dummy_team_path,
+  dummy_game_teams: dummy_game_teams_path
+}
+%>
+
+<a href='index.html'>Home Page</a>
+
+<%stat_tracker = StatTracker.from_csv(locations) %>
+
+<h3> Season Stats </h3>
+<h4> Biggest Bust: <%= stat_tracker.biggest_bust("20122013") %> </h4>
+<h4> Biggest Surprise: <%= stat_tracker.biggest_surprise("20122013") %> </h4>
+<h4> Winningest Coach: <%= stat_tracker.winningest_coach("20122013") %> </h4>
+<h4> Worst Coach: <%= stat_tracker.worst_coach("20122013")%> </h4>
+<h4> Most Accurate Team: <%= stat_tracker.most_accurate_team("20122013") %> </h4>
+<h4> Least Accurate Team: <%= stat_tracker.least_accurate_team("20122013") %> </h4>
+<h4> Most Hits: <%= stat_tracker.most_hits("20122013") %> </h4>
+<h4> Fewest Hits: <%= stat_tracker.fewest_hits("20122013") %> </h4>
+<h4> Power Play Goal Percentage: <%= stat_tracker.power_play_goal_percentage("20122013") %> </h4>
+<br>
+<hr>

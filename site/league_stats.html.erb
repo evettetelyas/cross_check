@@ -1,0 +1,41 @@
+
+<!--comment  -->
+<!--(1st do this to compile) erb site/league_stats.html.erb > site/league_stats.html
+ (then do this to open both from cross_check dir) open site/index.html-->
+ <% require './lib/stat_tracker.rb' %>
+
+ <% game_path = './data/game.csv'
+ team_path = './data/team_info.csv'
+ game_teams_path = './data/game_teams_stats.csv'
+ dummy_game_path = './dummy_data/dummy_game.csv'
+ dummy_team_path = './dummy_data/dummy_team_info.csv'
+ dummy_game_teams_path = './dummy_data/dummy_game_team_stats.csv'
+
+ locations = {
+   games: game_path,
+   teams: team_path,
+   game_teams: game_teams_path,
+   dummy_games: dummy_game_path,
+   dummy_teams: dummy_team_path,
+   dummy_game_teams: dummy_game_teams_path
+ }
+ %>
+
+<% stat_tracker = StatTracker.from_csv(locations) %>
+
+ <a href='index.html'>Home Page</a>
+
+ <h3> League Stats </h3>
+ <h4> Count of Teams: <%= stat_tracker.count_of_teams %> </h4>
+ <h4> Best Offense: <%= stat_tracker.best_offense %> </h4>
+ <h4> Worst Offense: <%= stat_tracker.worst_offense %> </h4>
+ <h4> Best Defense: <%= stat_tracker.best_defense %> </h4>
+ <h4> Worst Defense: <%= stat_tracker.worst_defense %> </h4>
+ <h4> Highest Scoring Visitor: <%= stat_tracker.highest_scoring_visitor %> </h4>
+ <h4> Lowest Scoring Visitor: <%= stat_tracker.lowest_scoring_visitor %> </h4>
+ <h4> Lowest Scoring Home Team: <%= stat_tracker.lowest_scoring_home_team %> </h4>
+ <h4> Winningest Team: <%= stat_tracker.winningest_team %> </h4>
+ <h4> Best Fans: <%= stat_tracker.best_fans %> </h4>
+ <h4> Worst Fans: <%= stat_tracker.worst_fans %> </h4>
+ <br>
+ <hr>
