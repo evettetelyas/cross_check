@@ -1,5 +1,10 @@
 module GameStatables
 
+#re-used functions within methods
+#all_goals
+#end helper methods
+
+
   def highest_total_score
     highest_score = 0
     @games.values.each do |game|
