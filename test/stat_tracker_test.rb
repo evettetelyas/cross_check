@@ -276,6 +276,23 @@ def test_worst_loss
   assert_equal 7, @stat_tracker.worst_loss("3")
 end
 
+def test_head_to_head
+  expected = {"Bruins"=>0.33, "Penguins"=>0.5}
+  assert_equal expected, @stat_tracker.head_to_head("3")
+end
+
+
+def test_seasonal_summary
+  expected = {"20142015"=>
+  {:postseason=>{:win_percentage=>1.0, :total_goals_scored=>4, :total_goals_against=>2, :average_goals_scored=>2.0, :average_goals_against=>1.0},
+   :regular_season=>{:win_percentage=>2.0, :total_goals_scored=>4, :total_goals_against=>7, :average_goals_scored=>2.0, :average_goals_against=>3.5}},
+  "20122013"=>
+  {:postseason=>{:win_percentage=>1.0, :total_goals_scored=>1, :total_goals_against=>2, :average_goals_scored=>1.0, :average_goals_against=>2.0},
+   :regular_season=>{:win_percentage=>0.5, :total_goals_scored=>7, :total_goals_against=>9, :average_goals_scored=>3.5, :average_goals_against=>4.5}}}
+
+  assert_equal expected, @stat_tracker.seasonal_summary("3")
+end
+
 #STILL NEED HEAD_TO_HEAD AND SEASONAL_SUMMARY
 #END ITERATION 4 TEAM STATABLES MODULE TESTS
 
