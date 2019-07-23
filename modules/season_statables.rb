@@ -1,221 +1,206 @@
 module SeasonStatables
 
-  #regular methods
+  def regular_season_games_by_team(season)
+    hash = Hash.new(0)
+    @teams.values.each do |team|
+      @games.values.each do |game|
+        if (game.away_team_id == team.team_id || game.home_team_id == team.team_id) && game.season == season && game.type == "R"
+          hash[team.team_id] += 1
+        end
+      end
+    end
+    hash
+  end
+
+  def regular_season_wins_by_team(season)
+    hash = Hash.new
+    @teams.values.each do |team|
+      hash[team.team_id] = 0
+      @games.values.each do |game|
+        if ((game.away_team_id == team.team_id && game.away_goals > game.home_goals) || (game.home_team_id == team.team_id && game.home_goals > game.away_goals)) && game.season == season && game.type == "R"
+          hash[team.team_id] += 1
+        end
+      end
+    end
+    hash
+  end
+
+  def postseason_games_by_team(season)
+    hash = Hash.new(0)
+    @teams.values.each do |team|
+      @games.values.each do |game|
+        if (game.away_team_id == team.team_id || game.home_team_id == team.team_id) && game.season == season && game.type == "P"
+          hash[team.team_id] += 1
+        end
+      end
+    end
+    hash
+  end
+
+  def postseason_wins_by_team(season)
+    hash = Hash.new
+    @teams.values.each do |team|
+      hash[team.team_id] = 0
+      @games.values.each do |game|
+        if ((game.away_team_id == team.team_id && game.away_goals > game.home_goals) || (game.home_team_id == team.team_id && game.home_goals > game.away_goals)) && game.season == season && game.type == "P"
+          hash[team.team_id] += 1
+        end
+      end
+    end
+    hash
+  end
+
+  def regular_season_win_percentage(season)
+    regular_season_wins_by_team(season).merge(regular_season_games_by_team(season)) { |team_id, wins, games| wins / games.to_f }
+  end
+
+  def postseason_win_percentage(season)
+    postseason_wins_by_team(season).merge(postseason_games_by_team(season)) { |team_id, wins, games| wins / games.to_f }
+  end
+
   def biggest_bust(season)
-    teams_that_made_the_postseason(season).max_by do |value|
-      regular_season_win_percentage(value.team_id, season) -
-      postseason_win_percentage(value.team_id, season)
-    end.team_name
+    array = regular_season_win_percentage(season).merge(postseason_win_percentage(season)) { |team_id, reg_pct, post_pct| reg_pct - post_pct }
+      .max_by { |team_id, diff| diff }
+    @teams[array[0]].team_name
   end
 
   def biggest_surprise(season)
-    teams_that_made_the_postseason(season).max_by do |value|
-      postseason_win_percentage(value.team_id, season) -
-      regular_season_win_percentage(value.team_id, season)
-    end.team_name
+    array = regular_season_win_percentage(season).merge(postseason_win_percentage(season)) { |team_id, reg_pct, post_pct| reg_pct - post_pct }
+      .min_by { |team_id, diff| diff }
+    @teams[array[0]].team_name
   end
 
-  #def winningest_coach(season)
-    # @game_teams.values.max_by do |value|
-       #(winning_game_teams_by_season_by_team(value.team_id, season).size /
-       #game_teams_by_season_by_team(value.team_id, season).size.to_f)
-     #end.head_coach
-   #end
-
-
-   # def worst_coach(season)
-   #   @game_teams.values.min_by do |value|
-   #     (winning_game_teams_by_season_by_team(value.team_id, season).size /
-   #     game_teams_by_season_by_team(value.team_id, season).size.to_f)
-   #   end.head_coach
-   # end
-
-   # def most_accurate_team(season)
-   #   @teams.values.max_by do |value|
-   #     total_shots_by_season_by_team(value.team_id, season) /
-   #     total_goals_by_season_by_team(value.team_id, season).to_f
-   #   end.team_name
-   # end
-   #
-   # def least_accurate_team(season)
-   #   @teams.values.min_by do |value|
-   #     total_shots_by_season_by_team(value.team_id, season) /
-   #     total_goals_by_season_by_team(value.team_id, season).to_f
-   #   end.team_name
-   # end
-
-   def most_hits(season)
-     @teams.values.max_by do |value|
-       total_hits_by_season_by_team(value.team_id, season)
-     end.team_name
-   end
-
-   # def fewest_hits(season)
-   #   @teams.values.min_by do |value|
-   #     total_hits_by_season_by_team(value.team_id, season)
-   #   end.team_name
-   # end
-
-   #end regular methods still need power play method
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#helper methods below
-
-
-
-#-----------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  def regular_season_games_by_team(team_id, season)
-    @games.values.find_all do |value|
-      value.season == season &&
-      value.type == "R" &&
-      (value.away_team_id == team_id || value.home_team_id == team_id)
-    end
-  end
-
-  def postseason_games_by_team(team_id, season)
-    @games.values.find_all do |value|
-      value.season == season &&
-      value.type == "P" &&
-      (value.away_team_id == team_id || value.home_team_id == team_id)
-    end
-  end
-
-  def season_games_by_team(team_id, season)
-    @games.values.find_all do |value|
-      value.season == season &&
-      (value.away_team_id == team_id || value.home_team_id == team_id)
-    end
-  end
-
-  def regular_season_wins_by_team(team_id, season)
-    regular_season_games_by_team(team_id, season).find_all do |game|
-      if game.away_team_id == team_id
-        game.away_goals > game.home_goals
-      elsif game.home_team_id == team_id
-        game.home_goals > game.away_goals
+  def all_coaches_array(season)
+    array = []
+    @game_teams.values.each do |game_team|
+      if @games[game_team.game_id].season == season
+        array << game_team.head_coach
       end
     end
+    array.uniq
   end
 
-  def postseason_wins_by_team(team_id, season)
-    postseason_games_by_team(team_id, season).find_all do |game|
-      if game.away_team_id == team_id
-        game.away_goals > game.home_goals
-      elsif game.home_team_id == team_id
-        game.home_goals > game.away_goals
+  def games_by_coach(season)
+    hash = Hash.new(0)
+    all_coaches_array(season).each do |head_coach|
+      @game_teams.values.each do |game_team|
+        if @games[game_team.game_id].season == season && game_team.head_coach == head_coach
+          hash[head_coach] += 1
+        end
       end
     end
+    hash
   end
 
-  def season_wins_by_team(team_id, season)
-    season_games_by_team(team_id, season).find_all do |game|
-      if game.away_team_id == team_id
-        game.away_goals > game.home_goals
-      elsif game.home_team_id == team_id
-        game.home_goals > game.away_goals
+  def wins_by_coach(season)
+    hash = Hash.new
+    all_coaches_array(season).each do |head_coach|
+      hash[head_coach] = 0
+      @game_teams.values.each do |game_team|
+        if @games[game_team.game_id].season == season && game_team.head_coach == head_coach && game_team.won == "TRUE"
+          hash[head_coach] += 1
+        end
       end
     end
+    hash
   end
 
-  def regular_season_win_percentage(team_id, season)
-    (regular_season_wins_by_team(team_id, season).size /
-      regular_season_games_by_team(team_id, season).size.to_f).round(2)
+  def winningest_coach(season)
+    array = games_by_coach(season).merge(wins_by_coach(season)) { |head_coach, games, wins| wins / games.to_f }
+      .max_by { |head_coach, win_pct| win_pct }
+    array[0]
   end
 
-  def postseason_win_percentage(team_id, season)
-    if postseason_games_by_team(team_id, season) == []
-      regular_season_win_percentage(team_id, season)
-    else
-      (postseason_wins_by_team(team_id, season).size /
-        postseason_games_by_team(team_id, season).size.to_f).round(2)
+  def worst_coach(season)
+    array = games_by_coach(season).merge(wins_by_coach(season)) { |head_coach, games, wins| wins / games.to_f }
+      .min_by { |head_coach, win_pct| win_pct }
+    array[0]
+  end
+
+  def shots_by_team(season)
+    hash = Hash.new(0)
+    @teams.values.each do |team|
+      @game_teams.values.each do |game_team|
+        if @games[game_team.game_id].season == season && team.team_id == game_team.team_id
+          hash[team.team_id] += game_team.shots
+        end
+      end
     end
+    hash
   end
 
-  def season_win_percentage(team_id, season)
-    (season_wins_by_team(team_id, season).size /
-      season_games_by_team(team_id, season).size.to_f).round(2)
+  def goals_by_team(season)
+    hash = Hash.new(0)
+    @teams.values.each do |team|
+      @game_teams.values.each do |game_team|
+        if @games[game_team.game_id].season == season && team.team_id == game_team.team_id
+          hash[team.team_id] += game_team.goals
+        end
+      end
+    end
+    hash
   end
 
-  def all_season_games(season)
-    @games.values.find_all { |value| value.season == season }
+  def hits_by_team(season)
+    hash = Hash.new(0)
+    @teams.values.each do |team|
+      @game_teams.values.each do |game_team|
+        if @games[game_team.game_id].season == season && team.team_id == game_team.team_id
+          hash[team.team_id] += game_team.hits
+        end
+      end
+    end
+    hash
   end
 
-  def postseason_games(season)
-    @games.values.find_all { |value| value.season == season && value.type == "P" }
+  def most_accurate_team(season)
+    array = goals_by_team(season).merge(shots_by_team(season)) { |team_id, goals, shots| goals / shots.to_f }
+      .max_by { |team_id, goal_ratio| goal_ratio }
+    @teams[array[0]].team_name
   end
 
-  def teams_that_made_the_postseason(season)
-    home = postseason_games(season).map { |game| game.home_team_id }
-    away = postseason_games(season).map { |game| game.away_team_id }
-    all_ids = home + away
-    all_ids.uniq!
-    all_ids.map { |team_id| @teams[team_id] }
+  def least_accurate_team(season)
+    array = goals_by_team(season).merge(shots_by_team(season)) { |team_id, goals, shots| goals / shots.to_f }
+      .min_by { |team_id, goal_ratio| goal_ratio }
+    @teams[array[0]].team_name
   end
 
-
-
-
-  def game_teams_by_season(season)
-    game_ids = all_season_games(season).map { |game| game.game_id }
-    @game_teams.values.find_all { |value| game_ids.include?(value.game_id) }
+  def most_hits(season)
+    array = hits_by_team(season).max_by { |team_id, hits| hits }
+    @teams[array[0]].team_name
   end
 
-  def game_teams_by_season_by_team(team_id, season)
-    game_teams_by_season(season).find_all { |game_team| game_team.team_id == team_id }
+  def fewest_hits(season)
+    array = hits_by_team(season).min_by { |team_id, hits| hits }
+    @teams[array[0]].team_name
   end
 
-  def winning_game_teams_by_season_by_team(team_id, season)
-    game_teams_by_season_by_team(team_id, season).find_all { |game_team| game_team.won? }
+  def power_play_goals_by_season
+    hash = Hash.new(0)
+    all_seasons_array.each do |season|
+      @game_teams.values.each do |game_team|
+        if @games[game_team.game_id].season == season
+          hash[season] += game_team.power_play_goals
+        end
+      end
+    end
+    @power_play_goals_by_season ||= hash
   end
 
-
-  def total_shots_by_season_by_team(team_id, season)
-    game_teams_by_season_by_team(team_id, season).sum { |game_team| game_team.shots }
+  def goals_by_season
+    hash = Hash.new(0)
+    all_seasons_array.each do |season|
+      @game_teams.values.each do |game_team|
+        if @games[game_team.game_id].season == season
+          hash[season] += game_team.goals
+        end
+      end
+    end
+    @goals_by_season ||= hash
   end
 
-  def total_goals_by_season_by_team(team_id, season)
-    game_teams_by_season_by_team(team_id, season).sum { |game_team| game_team.goals }
+  def power_play_goal_percentage(season)
+    hash = power_play_goals_by_season.merge(goals_by_season) { |season, ppg, goals| (ppg / goals.to_f ).round(2) }
+    hash[season]
   end
-
-  def total_hits_by_season_by_team(team_id, season)
-    game_teams_by_season_by_team(team_id, season).sum { |game_team| game_team.hits }
-  end
-
-  # power_play_goal_percentage	Percentage of goals that were power play goals for the season (rounded to the nearest 100th)	Float
-
-
-
 end

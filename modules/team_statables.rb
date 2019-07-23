@@ -1,60 +1,139 @@
 module TeamStatables
-  include LeagueStatables
 
-
-  #regular methods
   def team_info(team_id)
-    @teams[team_id].hashify
+    hash = Hash.new
+    @teams[team_id].instance_variables.each do |var|
+      hash[var.to_s.delete("@")] = @teams[team_id].instance_variable_get(var)
+    end
+    hash
+  end
+
+  def games_by_season(team_id)
+    hash = Hash.new(0)
+    all_seasons_array.each do |season|
+      @games.values.each do |game|
+        hash[season] += 1 if (game.away_team_id == team_id || game.home_team_id == team_id) && game.season == season
+      end
+    end
+    hash
+  end
+
+  def wins_by_season(team_id)
+    hash = Hash.new(0)
+    all_seasons_array.each do |season|
+      @games.values.each do |game|
+        hash[season] += 1 if ((game.away_team_id == team_id && game.away_goals > game.home_goals) || (game.home_team_id == team_id && game.home_goals > game.away_goals)) && game.season == season
+      end
+    end
+    hash
+  end
+
+  def worst_and_best_season(team_id)
+    array = wins_by_season(team_id).merge(games_by_season(team_id)) { |season, wins, games| wins / games.to_f }
+      .minmax_by { |season, win_pct| win_pct }
   end
 
   def best_season(team_id)
-    best_season_stat = all_season_hash(team_id).max_by {|k,v| v}
-    best_season_stat[0]
+    worst_and_best_season(team_id)[1][0]
   end
 
   def worst_season(team_id)
-    worst_season_stat = all_season_hash(team_id).min_by {|k,v| v}
-    worst_season_stat[0]
+    worst_and_best_season(team_id)[0][0]
   end
 
+  def total_games(team_id)
+    hash = Hash.new(0)
+    @games.values.each do |game|
+      hash[team_id] += 1 if game.away_team_id == team_id || game.home_team_id == team_id
+    end
+    hash
+  end
+
+  def total_wins(team_id)
+    hash = Hash.new(0)
+    @games.values.each do |game|
+      hash[team_id] += 1 if (game.away_team_id == team_id && game.away_goals > game.home_goals) || (game.home_team_id == team_id && game.home_goals > game.away_goals)
+    end
+    hash
+  end
 
   def average_win_percentage(team_id)
-    all_wins = all_games_won_by_season(team_id).values.sum
-    all_games = all_games_played_by_season(team_id).values.sum
-    avg = all_wins/all_games.to_f
-    avg.round(2)
+    hash = total_wins(team_id).merge(total_games(team_id)) { |team_id, wins, games| (wins / games.to_f).round(2) }
+    hash[team_id]
   end
 
   def most_goals_scored(team_id)
-    most_goals_stat = all_game_goals(team_id).max_by {|k,v| v}
-    most_goals_stat[1]
+    all_game_teams = @game_teams.values.find_all { |game_team| game_team.team_id == team_id }
+    all_game_teams.max_by { |game_team| game_team.goals }.goals
   end
 
   def fewest_goals_scored(team_id)
-    fewest_goals_stat = all_game_goals(team_id).min_by {|k,v| v}
-    fewest_goals_stat[1]
+    all_game_teams = @game_teams.values.find_all { |game_team| game_team.team_id == team_id }
+    all_game_teams.min_by { |game_team| game_team.goals }.goals
+  end
+
+  def games_against_other_teams(team_id)
+    hash = Hash.new(0)
+    @teams.values.each do |team|
+      @games.values.each do |game|
+        hash[team.team_id] += 1 if (game.away_team_id == team_id && game.home_team_id == team.team_id) || (game.home_team_id == team_id && game.away_team_id == team.team_id)
+      end
+    end
+    if hash[team_id] == 0
+      hash.delete(team_id)
+    end
+    hash
+  end
+
+  def wins_against_other_teams(team_id)
+    hash = Hash.new(0)
+    @teams.values.each do |team|
+      @games.values.each do |game|
+        hash[team.team_id] += 1 if (game.away_team_id == team_id && game.home_team_id == team.team_id && game.away_goals > game.home_goals) || (game.home_team_id == team_id && game.away_team_id == team.team_id && game.home_goals > game.away_goals)
+      end
+    end
+    hash
   end
 
   def favorite_opponent(team_id)
-    worst_team = favorite_opponent_stats(team_id).max_by {|k,v| v}
-    @teams[worst_team[0]].team_name
+    array = wins_against_other_teams(team_id).merge(games_against_other_teams(team_id)) { |team_id, wins, games| wins / games.to_f }
+      .max_by { |team_id, win_pct| win_pct }
+    @teams[array[0]].team_name
   end
 
   def rival(team_id)
-    best_team = rival_opponent_stats(team_id).max_by {|k,v| v}
-    @teams[best_team[0]].team_name
+    array = wins_against_other_teams(team_id).merge(games_against_other_teams(team_id)) { |team_id, wins, games| wins / games.to_f }
+      .min_by { |team_id, win_pct| win_pct }
+    @teams[array[0]].team_name
+  end
+
+  def game_point_differential(team_id)
+    array = []
+    @games.values.each do |game|
+      if game.away_team_id == team_id
+        array << game.away_goals - game.home_goals
+      elsif game.home_team_id == team_id
+        array << game.home_goals - game.away_goals
+      end
+    end
+    array
   end
 
   def biggest_team_blowout(team_id)
-    biggest_team_blowout_hash(team_id).values.flatten.uniq.max
+    game_point_differential(team_id).max
   end
 
   def worst_loss(team_id)
-    biggest_team_loss_hash(team_id).values.flatten.uniq.max
+    game_point_differential(team_id).min.abs
   end
 
   def head_to_head(team_id)
-   head_to_head_hash(team_id).transform_values {|v| (v[0]/v[1].to_f).round(2)}
+    hash = wins_against_other_teams(team_id).merge(games_against_other_teams(team_id)) { |team_id, wins, games| (wins / games.to_f).round(2) }
+    transformed_keys = Hash.new
+    hash.keys.each do |team_id|
+      transformed_keys[team_id] = @teams[team_id].team_name
+    end
+    hash.map { |team_id, win_pct| [transformed_keys[team_id], win_pct] }.to_h
   end
 
   def seasonal_summary(team_id)
@@ -80,324 +159,92 @@ module TeamStatables
     end
   end
 
-  #end regular methods
-
-
-
-  #-------------
-
-
-
-
-
-
-
-
-
-
-    #helper methods below
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  def head_to_head_hash(team_id)
-      opponent_stats = Hash.new(0)
-      @teams.values.each do |team|
-        opponent_stats[team.team_name] = [0,0] #[0]=wins, [1]=total games
-      end
-      opponent_stats.each do |other_team_name, num_wins|
-        @game_teams.values.each do |g|
-          if @teams[@games[g.game_id].home_team_id].team_name == other_team_name &&
-            @games[g.game_id].away_team_id == team_id &&
-            @games[g.game_id].away_goals > @games[g.game_id].home_goals
-            opponent_stats[@teams[@games[g.game_id].home_team_id].team_name][0] += 1
-          elsif @teams[@games[g.game_id].away_team_id].team_name == other_team_name &&
-            @games[g.game_id].home_team_id == team_id &&
-            @games[g.game_id].away_goals < @games[g.game_id].home_goals
-            opponent_stats[@teams[@games[g.game_id].away_team_id].team_name][0] += 1
-          end
-          if @teams[@games[g.game_id].home_team_id].team_name == other_team_name &&
-            @games[g.game_id].away_team_id == team_id
-            opponent_stats[@teams[@games[g.game_id].home_team_id].team_name][1] += 1
-          elsif @teams[@games[g.game_id].away_team_id].team_name == other_team_name &&
-            @games[g.game_id].home_team_id == team_id
-            opponent_stats[@teams[@games[g.game_id].away_team_id].team_name][1] += 1
-          end
-        end
-      end
-      opponent_stats.each do |team_name, games|
-        if games[1] == 0
-          opponent_stats.delete(team_name)
-        end
-      end
-    end
-
-
-    def games_per_season_type(team_id, post_reg)
-      season_games = Hash.new(0)
-      all_seasons_ary = []
-      @games.values.map do |game|
-        all_seasons_ary << game.season
-      end
-      all_seasons_ary.uniq.each do |season|
-        season_games[season] = @games.values.count {|g| g.season == season && g.type == post_reg && (g.home_team_id == team_id || g.away_team_id == team_id)}
-      end
-      season_games
-    end
-
-    def games_won_per_season_type (team_id, post_reg)
-      season_games = Hash.new(0)
-      all_seasons_ary = []
-      @games.values.map do |game|
-        all_seasons_ary << game.season
-      end
-      all_seasons_ary.uniq.each do |season|
-        season_games[season] << @games.values.count do |g|
-          g.season == season && g.type == post_reg &&
-          (g.home_team_id == team_id || g.away_team_id == team_id) &&
-          if g.home_team_id == team_id &&
-            g.home_goals > g.away_goals
-            season_games[season] += 1
-          elsif g.away_team_id == team_id &&
-            g.away_goals > g.home_goals
-            season_games[season] += 1
-          end
-        end
-      end
-      season_games
-    end
-
-    def season_win_percentages_type(team_id, post_reg)
-      seazy = games_won_per_season_type(team_id, post_reg).merge(games_per_season_type(team_id, post_reg)) {|season, won, played| won / played.to_f}
-      seazy.transform_values{|v| v.round(2)}
-    end
-
-    def goals_scored_per_season_type(team_id, post_reg)
-      season_goals = Hash.new(0)
-      all_seasons_ary = []
-      @games.values.map do |game|
-        all_seasons_ary << game.season
-      end
-      all_seasons_ary.uniq.each do |season|
-        @games.values.each do |g|
-          if g.season == season && g.type == post_reg &&
-          g.home_team_id == team_id
-          season_goals[season] += g.home_goals
-        elsif g.season == season && g.type == post_reg &&
-          g.away_team_id == team_id
-          season_goals[season] += g.away_goals
-          end
-        end
-      end
-      season_goals
-    end
-
-    def goals_allowed_per_season_type(team_id, post_reg)
-      season_goals = Hash.new(0)
-      all_seasons_ary = []
-      @games.values.map do |game|
-        all_seasons_ary << game.season
-      end
-      all_seasons_ary.uniq.each do |season|
-        @games.values.each do |g|
-          if g.season == season && g.type == post_reg &&
-          g.home_team_id == team_id
-          season_goals[season] += g.away_goals
-        elsif g.season == season && g.type == post_reg &&
-          g.away_team_id == team_id
-          season_goals[season] += g.home_goals
-          end
-        end
-      end
-      season_goals
-    end
-
-    def average_goals_scored_season_type(team_id, post_reg)
-      stat = goals_scored_per_season_type(team_id, post_reg).merge(games_per_season_type(team_id, post_reg)) {|season, goals, games| goals / games.to_f}
-      stat.transform_values{|v| v.round(2)}
-    end
-
-    def average_goals_allowed_season_type(team_id, post_reg)
-      stat = goals_allowed_per_season_type(team_id, post_reg).merge(games_per_season_type(team_id, post_reg)) {|season, goals, games| goals / games.to_f}
-      stat.transform_values{|v| v.round(2)}
-    end
-
-  end
-
-
-  def all_season_hash(team_id)
-    all_games_won_by_season(team_id).merge(all_games_played_by_season(team_id)) {|season, won, played| won / played.to_f}
-  end
-
-  def all_games_played_by_season(team_id)
-    all_season_games = Hash.new
+  def games_per_season_type(team_id, post_reg)
+    season_games = Hash.new(0)
     all_seasons_ary = []
     @games.values.map do |game|
       all_seasons_ary << game.season
     end
     all_seasons_ary.uniq.each do |season|
-      all_season_games[season] = @games.values.count {|g| g.season == season && (g.home_team_id == team_id || g.away_team_id == team_id)}
+      season_games[season] = @games.values.count {|g| g.season == season && g.type == post_reg && (g.home_team_id == team_id || g.away_team_id == team_id)}
     end
-    all_season_games
+    season_games
   end
 
-  def all_games_won_by_season(team_id)
-    all_season_won_games = Hash.new
+  def games_won_per_season_type (team_id, post_reg)
+    season_games = Hash.new(0)
     all_seasons_ary = []
     @games.values.map do |game|
       all_seasons_ary << game.season
     end
     all_seasons_ary.uniq.each do |season|
-      all_season_won_games[season] = @games.values.count do |g| g.season == season &&
+      season_games[season] << @games.values.count do |g|
+        g.season == season && g.type == post_reg &&
         (g.home_team_id == team_id || g.away_team_id == team_id) &&
-        if g.home_team_id == team_id
+        if g.home_team_id == team_id &&
           g.home_goals > g.away_goals
-        elsif g.away_team_id == team_id
+          season_games[season] += 1
+        elsif g.away_team_id == team_id &&
           g.away_goals > g.home_goals
+          season_games[season] += 1
         end
       end
     end
-    all_season_won_games
+    season_games
   end
 
-
-
-  def all_game_goals(team_id)
-    all_goals_by_game = Hash.new
-    all_games = []
-    @games.values.each do |game|
-      if team_id == game.home_team_id || game.away_team_id
-        all_games << game
-      end
-    end
-    all_games.each do |game|
-      if team_id == game.home_team_id
-      all_goals_by_game[game] = game.home_goals
-      elsif team_id == game.away_team_id
-      all_goals_by_game[game] = game.away_goals
-      end
-    end
-    all_goals_by_game
+  def season_win_percentages_type(team_id, post_reg)
+    seazy = games_won_per_season_type(team_id, post_reg).merge(games_per_season_type(team_id, post_reg)) {|season, won, played| won / played.to_f}
+    seazy.transform_values{|v| v.round(2)}
   end
 
-
-
-  def opponent_games_played(team_id)
-    opponent_stats = Hash.new(0)
-    @teams.values.each do |team|
-      opponent_stats[team.team_id] = 0
+  def goals_scored_per_season_type(team_id, post_reg)
+    season_goals = Hash.new(0)
+    all_seasons_ary = []
+    @games.values.map do |game|
+      all_seasons_ary << game.season
     end
-    opponent_stats.each do |other_team_id, num_wins|
-      @game_teams.values.each do |g|
-        if @games[g.game_id].home_team_id == other_team_id && @games[g.game_id].away_team_id == team_id
-          opponent_stats[@games[g.game_id].home_team_id] += 1
-        elsif @games[g.game_id].away_team_id == other_team_id && @games[g.game_id].home_team_id == team_id
-          opponent_stats[@games[g.game_id].away_team_id] += 1
+    all_seasons_ary.uniq.each do |season|
+      @games.values.each do |g|
+        if g.season == season && g.type == post_reg &&
+        g.home_team_id == team_id
+        season_goals[season] += g.home_goals
+      elsif g.season == season && g.type == post_reg &&
+        g.away_team_id == team_id
+        season_goals[season] += g.away_goals
         end
       end
     end
-    opponent_stats.each do |team_id, games|
-      if games == 0
-        opponent_stats.delete(team_id)
-      end
-    end
+    season_goals
   end
 
-  def opponent_games_lost(team_id)
-    opponent_stats = Hash.new(0)
-    @teams.values.each do |team|
-      opponent_stats[team.team_id] = 0
+  def goals_allowed_per_season_type(team_id, post_reg)
+    season_goals = Hash.new(0)
+    all_seasons_ary = []
+    @games.values.map do |game|
+      all_seasons_ary << game.season
     end
-    opponent_stats.each do |other_team_id, num_wins|
-      @game_teams.values.each do |g|
-        if @games[g.game_id].home_team_id == other_team_id && @games[g.game_id].away_team_id == team_id && @games[g.game_id].away_goals < @games[g.game_id].home_goals
-          opponent_stats[@games[g.game_id].home_team_id] += 1
-        elsif @games[g.game_id].away_team_id == other_team_id && @games[g.game_id].home_team_id == team_id && @games[g.game_id].away_goals > @games[g.game_id].home_goals
-          opponent_stats[@games[g.game_id].away_team_id] += 1
+    all_seasons_ary.uniq.each do |season|
+      @games.values.each do |g|
+        if g.season == season && g.type == post_reg &&
+        g.home_team_id == team_id
+        season_goals[season] += g.away_goals
+      elsif g.season == season && g.type == post_reg &&
+        g.away_team_id == team_id
+        season_goals[season] += g.home_goals
         end
       end
     end
-    opponent_stats
+    season_goals
   end
 
-  def opponent_games_won(team_id)
-    opponent_stats = Hash.new(0)
-    @teams.values.each do |team|
-      opponent_stats[team.team_id] = 0
-    end
-    opponent_stats.each do |other_team_id, num_wins|
-      @game_teams.values.each do |g|
-        if @games[g.game_id].home_team_id == other_team_id && @games[g.game_id].away_team_id == team_id && @games[g.game_id].away_goals > @games[g.game_id].home_goals
-          opponent_stats[@games[g.game_id].home_team_id] += 1
-        elsif @games[g.game_id].away_team_id == other_team_id && @games[g.game_id].home_team_id == team_id && @games[g.game_id].away_goals < @games[g.game_id].home_goals
-          opponent_stats[@games[g.game_id].away_team_id] += 1
-        end
-      end
-    end
-    opponent_stats
+  def average_goals_scored_season_type(team_id, post_reg)
+    stat = goals_scored_per_season_type(team_id, post_reg).merge(games_per_season_type(team_id, post_reg)) {|season, goals, games| goals / games.to_f}
+    stat.transform_values{|v| v.round(2)}
   end
 
-  def favorite_opponent_stats(team_id)
-   opponent_games_won(team_id).merge(opponent_games_played(team_id)) {|opponent, lost, played| lost / played.to_f}
+  def average_goals_allowed_season_type(team_id, post_reg)
+    stat = goals_allowed_per_season_type(team_id, post_reg).merge(games_per_season_type(team_id, post_reg)) {|season, goals, games| goals / games.to_f}
+    stat.transform_values{|v| v.round(2)}
   end
-
-  def rival_opponent_stats(team_id)
-   opponent_games_lost(team_id).merge(opponent_games_played(team_id)) {|opponent, lost, played| lost / played.to_f}
-  end
-
-
-
-  def biggest_team_blowout_hash(team_id)
-    opponent_blowout_stats = Hash.new(0)
-    @teams.values.each do |team|
-      opponent_blowout_stats[team.team_id] = []
-    end
-    opponent_blowout_stats.each do |other_team_id, blowout_abs|
-      @game_teams.values.each do |g|
-        if @games[g.game_id].home_team_id == other_team_id && @games[g.game_id].away_team_id == team_id && @games[g.game_id].away_goals > @games[g.game_id].home_goals
-          opponent_blowout_stats[@games[g.game_id].home_team_id] << ((@games[g.game_id].home_goals - @games[g.game_id].away_goals).abs)
-        elsif @games[g.game_id].away_team_id == other_team_id && @games[g.game_id].home_team_id == team_id && @games[g.game_id].away_goals < @games[g.game_id].home_goals
-          opponent_blowout_stats[@games[g.game_id].away_team_id] << ((@games[g.game_id].home_goals - @games[g.game_id].away_goals).abs)
-        end
-      end
-    end
-    opponent_blowout_stats
-  end
-
-  def biggest_team_loss_hash(team_id)
-    opponent_blowout_stats = Hash.new(0)
-    @teams.values.each do |team|
-      opponent_blowout_stats[team.team_id] = []
-    end
-    opponent_blowout_stats.each do |other_team_id, blowout_abs|
-      @game_teams.values.each do |g|
-        if @games[g.game_id].home_team_id == other_team_id && @games[g.game_id].away_team_id == team_id && @games[g.game_id].away_goals < @games[g.game_id].home_goals
-          opponent_blowout_stats[@games[g.game_id].home_team_id] << ((@games[g.game_id].home_goals - @games[g.game_id].away_goals).abs)
-        elsif @games[g.game_id].away_team_id == other_team_id && @games[g.game_id].home_team_id == team_id && @games[g.game_id].away_goals > @games[g.game_id].home_goals
-          opponent_blowout_stats[@games[g.game_id].away_team_id] << ((@games[g.game_id].home_goals - @games[g.game_id].away_goals).abs)
-        end
-      end
-    end
-    opponent_blowout_stats
-  end
-
-
-
-
 end
