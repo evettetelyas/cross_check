@@ -1,56 +1,5 @@
 module GameStatHelper
 
-  def opponent_at_home?(game, team_id, other_team_id)
-    game.home_team_id == other_team_id && game.away_team_id == team_id
-  end
-
-  def opponent_away?(game, team_id, other_team_id)
-    game.away_team_id == other_team_id && game.home_team_id == team_id
-  end
-
-  def home_team_won?(game)
-    game.away_goals < game.home_goals
-  end
-
-  def away_team_won?(game)
-    game.away_goals > game.home_goals
-  end
-
-  def goal_diff_absolute(game)
-    game.home_goals - game.away_goals.abs
-  end
-
-  def games_per_season_type(team_id, post_reg, all_games = false)
-    season_games = Hash.new(0)
-    all_seasons_ary.each do |season|
-      season_games[season] = @games.values.count {|g| g.season == season && g.type == post_reg && (g.home_team_id == team_id || g.away_team_id == team_id)}
-    end
-      season_games.each do |season, games|
-        season_games.delete(season) if games == 0
-      end
-  season_games
-  end
-
-
-  def games_won_per_season_type (team_id, post_reg)
-    season_games = Hash.new(0)
-    all_seasons_ary.each do |season|
-      season_games[season] = 0
-      @games.values.each do |g|
-        g.season == season && g.type == post_reg &&
-        (g.home_team_id == team_id || g.away_team_id == team_id) &&
-        if g.home_team_id == team_id &&
-          home_team_won?(g)
-          season_games[season] += 1
-        elsif g.away_team_id == team_id &&
-          away_team_won?(g)
-          season_games[season] += 1
-        end
-      end
-    end
-    season_games
-  end
-
   def all_game_goals(team_id)
     all_goals_by_game = Hash.new
     all_games_per_team(team_id).each do |game|

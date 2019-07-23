@@ -1,30 +1,5 @@
 module TeamStatHelper
 
-  def team_name_ary
-    team_name_ary = []
-    @teams.values.each do |team|
-      team_name_ary.push(team.team_name)
-    end
-    team_name_ary.uniq
-  end
-
-  def all_games_per_team(team_id)
-    all_games = []
-    @games.values.each do |game|
-      if team_id == game.home_team_id || game.away_team_id
-        all_games << game
-      end
-    end
-  end
-
-  def opponent_stats_hash
-    opp_data = Hash.new(0)
-    @teams.values.each do |team|
-      opp_data[team.team_id] = 0
-    end
-    opp_data
-  end
-
   def opponent_games_played(team_id)
     games_played = Hash.new(0)
     opponent_stats_hash.map do |other_team_id, num_games|
