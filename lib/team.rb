@@ -10,10 +10,4 @@ class Team
     @link = row["link"]
   end
 
-  def hashify
-    instance_variables.map do |var|
-      [var[1..-1], instance_variable_get(var)]
-    end.to_h
-  end
-
 end
