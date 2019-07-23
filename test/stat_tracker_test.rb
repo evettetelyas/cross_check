@@ -272,7 +272,6 @@ class DummyGameTest < Minitest::Test
   end
 
   def test_biggest_surprise
-    binding.pry
     assert_equal "Bruins", @stat_tracker.biggest_surprise("20122013")
   end
 
