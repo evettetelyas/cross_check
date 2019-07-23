@@ -1,9 +1,36 @@
-#test{
+#nav_bar{
   border-style: solid;
   border-color:black;
   border-width: 2px;
   border-length: 300px;
   background-color: #34ebe5;
   opacity: 0.5;
-  text-align: center; 
+  text-align: center;
+}
+#info_page_head{
+  border-style: solid;
+  border-color: black;
+  border-width: 2px;
+  length: 300px;
+  width: 1700px;
+  opacity:0.6;
+  background-color: pink;
+  text-align: center;
+  margin-right: 100px;
+  margin-left: 100px;
+  overflow: hidden;
+}
+
+#meet_the_devs{
+  text-align: center;
+  length: 400px;
+  width: 1700px;
+  border-style: solid;
+  border-color: black;
+  border-width: 2px;
+  border-length: 700px;
+  opacity:0.9;
+  background-color: white;
+  margin-top: 25px;
+  margin-right: 100px;
 }
