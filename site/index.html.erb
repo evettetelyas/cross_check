@@ -65,3 +65,15 @@ stat_tracker = StatTracker.from_csv(locations) %>
 <h4> Seasonal Summary: <%= stat_tracker.seasonal_summary("3") %> </h4>
 <br>
 <hr>
+<h3> Season Stats </h3>
+<h4> Biggest Bust: <%= stat_tracker.biggest_bust("20122013") %> </h4>
+<h4> Biggest Surprise: <%= stat_tracker.biggest_surprise("20122013") %> </h4>
+<h4> Winningest Coach: <%= stat_tracker.winningest_coach("20122013") %> </h4>
+<h4> Worst Coach: <%= stat_tracker.worst_coach("20122013")%> </h4>
+<h4> Most Accurate Team: <%= stat_tracker.most_accurate_team("20122013") %> </h4>
+<h4> Least Accurate Team: <%= stat_tracker.least_accurate_team("20122013") %> </h4>
+<h4> Most Hits: <%= stat_tracker.most_hits("20122013") %> </h4>
+<h4> Fewest Hits: <%= stat_tracker.fewest_hits("20122013") %> </h4>
+<h4> Power Play Goal Percentage: <%= stat_tracker.power_play_goal_percentage("20122013") %> </h4>
+<br>
+<hr>
