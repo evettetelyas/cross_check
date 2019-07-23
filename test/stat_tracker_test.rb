@@ -301,11 +301,19 @@ def test_games_per_season_type
 end
 
 
-def test_games_won_per_season_type (team_id, post_reg)
+def test_games_won_per_season_type
   expected_1 = {"20122013"=>1}
   expected_2 = {"20142015"=>2}
-  assert_equal expected_1, @stat_tracker.games_per_season_type("3", "R")
-  assert_equal expected_2, @stat_tracker.games_per_season_type("3", "P")
+  assert_equal expected_1, @stat_tracker.games_won_season_type("3", "R")
+  assert_equal expected_2, @stat_tracker.games_won_season_type("3", "P")
+end
+
+def season_win_percentages_type
+  skip
+  expected_1 = {"20142015"=>0.0, "20122013"=>0.5}
+  expected_2 = {"20142015"=>1.0, "20122013"=>0.0}
+  assert_equal expected_1, @stat_tracker.season_wins_percentages_type("3", "R")
+  assert_equal expected_2, @stat_tracker.season_wins_percentages_type("3", "P")
 end
 
 #STILL NEED HEAD_TO_HEAD AND SEASONAL_SUMMARY
