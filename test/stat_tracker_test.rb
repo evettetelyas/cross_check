@@ -434,6 +434,11 @@ end
 #END ITERATION 5 TEAM STATS MODULE TESTS
 
 
+  def test_biggest_surprise
+    assert_equal "Bruins", @stat_tracker.biggest_surprise("20122013")
+  end
+
+
 
 #ITERATION 1 GAME STATABLES HELPER METHOD TESTS
 #END ITERATION 1 GAME STATABLES HELP METHOD TESTS
@@ -445,5 +450,6 @@ def test_won
   assert @stat_tracker.game_teams[4].won?
 end
 #END GAME
+
 
 end
