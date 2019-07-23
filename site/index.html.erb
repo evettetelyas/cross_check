@@ -20,15 +20,12 @@ locations = {
 }
 %>
 
-
-
 <% game_path = './data/game.csv'
 team_path = './data/team_info.csv'
 game_teams_path = './data/game_teams_stats.csv'
 dummy_game_path = './dummy_data/dummy_game.csv'
 dummy_team_path = './dummy_data/dummy_team_info.csv'
 dummy_game_teams_path = './dummy_data/dummy_game_team_stats.csv'
-
 
 stat_tracker = StatTracker.from_csv(locations) %>
 <h3> Game Stats </h3>
@@ -38,6 +35,7 @@ stat_tracker = StatTracker.from_csv(locations) %>
 <h4> Percentage of Home Wins: <%= stat_tracker.percentage_home_wins %> </h4>
 <h4> Percentage of Visitor Wins: <%= stat_tracker.percentage_visitor_wins %> </h4>
 <br>
+<hr>
 <h3> League Stats </h3>
 <h4> Count of Teams: <%= stat_tracker.count_of_teams %> </h4>
 <h4> Best Offense: <%= stat_tracker.best_offense %> </h4>
@@ -51,3 +49,19 @@ stat_tracker = StatTracker.from_csv(locations) %>
 <h4> Best Fans: <%= stat_tracker.best_fans %> </h4>
 <h4> Worst Fans: <%= stat_tracker.worst_fans %> </h4>
 <br>
+<hr>
+<h3> Team Stats </h3>
+<h4> Team Info: <%= stat_tracker.team_info("3") %> </h4>
+<h4> Best Season: <%= stat_tracker.best_season("3") %> </h4>
+<h4> Worst Season: <%= stat_tracker.worst_season("3") %> </h4>
+<h4> Average Win Percentage: <%= stat_tracker.average_win_percentage("3")%> </h4>
+<h4> Most Goals Scored: <%= stat_tracker.most_goals_scored("3") %> </h4>
+<h4> Fewest Goals Scored: <%= stat_tracker.fewest_goals_scored("3") %> </h4>
+<h4> Favorite Opponent: <%= stat_tracker.favorite_opponent("3") %> </h4>
+<h4> Rival: <%= stat_tracker.rival("3") %> </h4>
+<h4> Biggest Team Blowout: <%= stat_tracker.biggest_team_blowout("3") %> </h4>
+<h4> Worst Loss: <%= stat_tracker.worst_loss("3") %> </h4>
+<h4> Head to Head: <%= stat_tracker.head_to_head("3") %> </h4>
+<h4> Seasonal Summary: <%= stat_tracker.seasonal_summary("3") %> </h4>
+<br>
+<hr>
