@@ -148,13 +148,13 @@ def test_games_by_team
   assert_equal 6, @stat_tracker.games_by_team("6").count
 end
 
-def test_home_games
-  assert_equal 4, @stat_tracker.home_games("6").count
-end
+# def test_home_games
+#   assert_equal 4, @stat_tracker.home_games("6").count
+# end
 
-def test_away_games
-  assert_equal 2, @stat_tracker.away_games("6").count
-end
+# def test_away_games
+#   assert_equal 2, @stat_tracker.away_games("6").count
+# end
 
 def test_home_goals_allowed
   assert_equal 10, @stat_tracker.home_goals_allowed("6")
@@ -188,11 +188,11 @@ def test_average_home_goals
   assert_equal 2.75, @stat_tracker.average_home_goals("6")
 end
 
-def test_home_games_won
-  assert_instance_of Array, @stat_tracker.home_games_won("6")
-  assert_instance_of Game, @stat_tracker.home_games_won("6")[0]
-  assert_equal 2, @stat_tracker.home_games_won("6").size
-end
+# def test_home_games_won
+#   assert_instance_of Array, @stat_tracker.home_games_by_team("6")
+#   assert_instance_of Game, @stat_tracker.home_games_by_team("6")[0]
+#   assert_equal 2, @stat_tracker.home_games_by_team("6").size
+# end
 
 def test_away_games_won
   assert_instance_of Array, @stat_tracker.away_games_won("6")
@@ -211,11 +211,11 @@ def test_home_game_win_percentage
 end
 
 def test_away_game_win_percentage
-  assert_equal 0.5, @stat_tracker.away_game_win_percentage("6")
+  assert_equal 0.5, @stat_tracker.away_win_percentage_by_team("6")
 end
 
 def test_all_games_win_percentage
-  assert_equal 0.57, @stat_tracker.all_games_winning_percentage("5")
+  assert_equal 0.57, @stat_tracker.all_games_win_percentage("5")
 end
 
 #END ITERATION 3 LEAGUE STATABLES  MODULES TESTS
@@ -251,7 +251,7 @@ def test_average_win_percentage
 end
 
 def test_most_goals_scored
-  assert_equal 8, @stat_tracker.most_goals_scored("3")
+  assert_equal 3, @stat_tracker.most_goals_scored("3")
 end
 
 def test_fewest_goals_scored
@@ -275,6 +275,77 @@ end
 def test_worst_loss
   assert_equal 7, @stat_tracker.worst_loss("3")
 end
+
+def test_head_to_head
+  expected = {"Bruins"=>0.33, "Penguins"=>0.5}
+  assert_equal expected, @stat_tracker.head_to_head("3")
+end
+
+
+def test_seasonal_summary
+  expected = {"20142015"=>
+  {:postseason=>{:win_percentage=>1.0, :total_goals_scored=>4, :total_goals_against=>2, :average_goals_scored=>2.0, :average_goals_against=>1.0},
+   :regular_season=>{:win_percentage=>2.0, :total_goals_scored=>4, :total_goals_against=>7, :average_goals_scored=>2.0, :average_goals_against=>3.5}},
+  "20122013"=>
+  {:postseason=>{:win_percentage=>1.0, :total_goals_scored=>1, :total_goals_against=>2, :average_goals_scored=>1.0, :average_goals_against=>2.0},
+   :regular_season=>{:win_percentage=>0.5, :total_goals_scored=>7, :total_goals_against=>9, :average_goals_scored=>3.5, :average_goals_against=>4.5}}}
+
+  assert_equal expected, @stat_tracker.seasonal_summary("3")
+end
+
+def test_games_per_season_type
+  expected_1= {"20142015"=>2, "20122013"=>1}
+  expected_2= {"20142015"=>2, "20122013"=>2}
+  assert_equal expected_1, @stat_tracker.games_per_season_type("3", "P")
+  assert_equal expected_2, @stat_tracker.games_per_season_type("3", "R")
+end
+
+
+def test_games_won_per_season_type
+  expected_1 = {"20122013"=>1}
+  expected_2 = {"20142015"=>2}
+  assert_equal expected_1, @stat_tracker.games_won_per_season_type("3", "R")
+  assert_equal expected_2, @stat_tracker.games_won_per_season_type("3", "P")
+end
+
+def season_win_percentages_type
+  skip
+  expected_1 = {"20142015"=>0.0, "20122013"=>0.5}
+  expected_2 = {"20142015"=>1.0, "20122013"=>0.0}
+  assert_equal expected_1, @stat_tracker.season_wins_percentages_type("3", "R")
+  assert_equal expected_2, @stat_tracker.season_wins_percentages_type("3", "P")
+end
+
+def test_goals_scored_per_season_type
+  expected_1= {"20142015"=>4, "20122013"=>7}
+  expected_2 = {"20142015"=>4, "20122013"=>1}
+  assert_equal expected_1, @stat_tracker.goals_scored_per_season_type("3", "R")
+  assert_equal expected_2, @stat_tracker.goals_scored_per_season_type("3", "P")
+end
+
+ def test_goals_allowed_per_season_type
+   expected_1 = {"20142015"=>7, "20122013"=>9}
+   expected_2 = {"20142015"=>2, "20122013"=>2}
+   assert_equal expected_1, @stat_tracker.goals_allowed_per_season_type("3", "R")
+   assert_equal expected_2, @stat_tracker.goals_allowed_per_season_type("3", "P")
+ end
+
+ def test_average_goals_scored_season_type
+   expected_1 = {"20142015"=>2.0, "20122013"=>3.5}
+   expected_2 = {"20142015"=>2.0, "20122013"=>1.0}
+   assert_equal expected_1, @stat_tracker.average_goals_scored_season_type("3", "R")
+   assert_equal expected_2, @stat_tracker.average_goals_scored_season_type("3", "P")
+ end
+
+ def test_average_goals_allowed_season_type
+   expected_1 = {"20142015"=>3.5, "20122013"=>4.5}
+   expected_2 = {"20142015"=>1.0, "20122013"=>2.0}
+   assert_equal expected_1, @stat_tracker.average_goals_allowed_season_type("3", "R")
+   assert_equal expected_2, @stat_tracker.average_goals_allowed_season_type("3", "P")
+ end
+
+
+
 
 #STILL NEED HEAD_TO_HEAD AND SEASONAL_SUMMARY
 #END ITERATION 4 TEAM STATABLES MODULE TESTS
@@ -328,13 +399,13 @@ def test_postseason_wins_by_team
   assert_equal 2, @stat_tracker.postseason_wins_by_team("3", "20142015").size
 end
 
-def test_season_wins_by_team
-  assert_instance_of Game, @stat_tracker.season_wins_by_team("3", "20122013").first
-  assert_equal 1, @stat_tracker.season_wins_by_team("3", "20122013").size
-end
+# def test_season_wins_by_team
+#   assert_instance_of Game, @stat_tracker.season_wins_by_team("3", "20122013").first
+#   assert_equal 1, @stat_tracker.season_wins_by_team("3", "20122013").size
+# end
 
 def test_regular_season_win_percentage
-  assert_equal 0.5, @stat_tracker.regular_season_win_percentage("3", "20122013")
+  assert_equal 0.5, @stat_tracker.regular_season_win_percentage("20122013")["3"]
 end
 
 def test_postseason_win_percentage
