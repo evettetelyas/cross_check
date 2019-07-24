@@ -1,17 +1,10 @@
 module SeasonStatHelper
 
-  def all_games_played_by_season(team_id)
-    all_season_games = Hash.new
+  def all_games_won_vs_played_by_season(team_id)
+    games = Hash.new {|h,k| h[k] = [0,0]}
     all_seasons_ary.each do |season|
-      all_season_games[season] = @games.values.count {|g| g.season == season && (g.home_team_id == team_id || g.away_team_id == team_id)}
-    end
-    all_season_games
-  end
-
-  def all_games_won_by_season(team_id)
-    all_season_won_games = Hash.new
-    all_seasons_ary.each do |season|
-      all_season_won_games[season] = @games.values.count do |g| g.season == season &&
+      games[season][0] = @games.values.count do |g|
+        g.season == season &&
         (g.home_team_id == team_id || g.away_team_id == team_id) &&
         if g.home_team_id == team_id
           g.home_goals > g.away_goals
@@ -19,8 +12,12 @@ module SeasonStatHelper
           g.away_goals > g.home_goals
         end
       end
+      games[season][1] = @games.values.count do |g|
+        g.season == season &&
+        (g.home_team_id == team_id || g.away_team_id == team_id)
+      end
     end
-    all_season_won_games
+    games
   end
 
   def games_per_season_type(team_id, post_reg, all_games = false)
@@ -58,25 +55,13 @@ module SeasonStatHelper
     seazy.transform_values{|v| v.round(2)}
   end
 
-  def regular_season_win_percentage(season)
-    reg_szn_wins = Hash.new
+  def reg_post_szn_percentages(season)
+    szn_wins = Hash.new {|h,k| h[k] = [0,0]}
     @teams.values.each do |team|
-      reg_szn_wins[team.team_id] = season_win_percentages_type(team.team_id, "R")[season]
+      szn_wins[team.team_id][0] = season_win_percentages_type(team.team_id, "R")[season]
+      szn_wins[team.team_id][1] = season_win_percentages_type(team.team_id, "P")[season]
     end
-    reg_szn_wins
-  end
-
-  def postseason_win_percentage(season)
-    post_szn_wins = Hash.new
-    @teams.values.each do |team|
-      post_szn_wins[team.team_id] = season_win_percentages_type(team.team_id, "P")[season]
-    end
-    post_szn_wins
-  end
-
-  def bust_surprise_minmax(season)
-   regular_season_win_percentage(season).merge(postseason_win_percentage(season)) { |team_id, reg_pct, post_pct| reg_pct - post_pct }
-      .minmax_by { |team_id, diff| diff }
+    szn_wins.transform_values{|v| (v[0] - v[1].to_f)}
   end
 
   def all_coaches_array(season)

@@ -5,20 +5,19 @@ module TeamStatables
   end
 
   def best_season(team_id)
-    best_season_stat = all_season_hash(team_id).max_by {|k,v| v}
-    best_season_stat[0]
+    best = all_games_won_vs_played_by_season(team_id).max_by{|k,v| v[0]/v[1].to_f}
+    best[0]
   end
 
   def worst_season(team_id)
-    worst_season_stat = all_season_hash(team_id).min_by {|k,v| v}
-    worst_season_stat[0]
+    worst = all_games_won_vs_played_by_season(team_id).min_by{|k,v| v[0]/v[1].to_f}
+    worst[0]
   end
 
   def average_win_percentage(team_id)
-    all_wins = all_games_won_by_season(team_id).values.sum
-    all_games = all_games_played_by_season(team_id).values.sum
-    avg = all_wins/all_games.to_f
-    avg.round(2)
+    all_games_won = all_games_won_vs_played_by_season(team_id).values.inject(0) {|sum, v| v[0] + sum}
+    all_games = all_games_won_vs_played_by_season("18").values.inject(0) {|sum, v| v[1] + sum}
+    (all_games_won/all_games.to_f).round(2)
   end
 
   def most_goals_scored(team_id)

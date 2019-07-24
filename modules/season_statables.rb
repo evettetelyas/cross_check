@@ -1,11 +1,17 @@
 module SeasonStatables
 
   def biggest_bust(season)
-    @teams[bust_surprise_minmax(season)[1][0]].team_name
+    max = reg_post_szn_percentages(season)
+      .max_by { |team, pct| pct }
+    max[1].round(2)
+    @teams[max[0]].team_name
   end
 
   def biggest_surprise(season)
-    @teams[bust_surprise_minmax(season)[0][0]].team_name
+    min = reg_post_szn_percentages(season)
+      .min_by { |team, pct| pct }
+    min[1].round(2)
+    @teams[min[0]].team_name
   end
 
   def winningest_coach(season)
