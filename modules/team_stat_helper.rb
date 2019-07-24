@@ -44,12 +44,17 @@ module TeamStatHelper
     games_won
   end
 
-  def biggest_team_blowout_hash(team_id)
+  def blowout_stats_hash
     opponent_blowout_stats = Hash.new(0)
     @teams.values.each do |team|
       opponent_blowout_stats[team.team_id] = []
     end
-    opponent_blowout_stats.each do |other_team_id, blowout_abs|
+    opponent_blowout_stats
+  end
+
+  def biggest_team_blowout_hash(team_id)
+    opponent_blowout_stats = Hash.new {|h,k| h[k] = []}
+    blowout_stats_hash.each do |other_team_id, blowout_abs|
       @games.values.each do |g|
         if opponent_at_home?(g, team_id, other_team_id) &&
           away_team_won?(g)
@@ -64,11 +69,8 @@ module TeamStatHelper
   end
 
   def biggest_team_loss_hash(team_id)
-    opponent_blowout_stats = Hash.new(0)
-    @teams.values.each do |team|
-      opponent_blowout_stats[team.team_id] = []
-    end
-    opponent_blowout_stats.each do |other_team_id, blowout_abs|
+    opponent_blowout_stats = Hash.new {|h,k| h[k] = []}
+    blowout_stats_hash.each do |other_team_id, blowout_abs|
       @games.values.each do |g|
         if opponent_at_home?(g, team_id, other_team_id) && home_team_won?(g)
           opponent_blowout_stats[g.home_team_id] << (goal_diff_absolute(g))
