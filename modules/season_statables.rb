@@ -54,5 +54,4 @@ module SeasonStatables
     hash = goals_by_season_by_type.transform_values{|v| (v[0]/v[1].to_f).round(2)}
     hash[season]
   end
-
 end
