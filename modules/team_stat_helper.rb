@@ -1,5 +1,25 @@
 module TeamStatHelper
 
+  def all_games_won_vs_played_by_season(team_id)
+    games = Hash.new {|h,k| h[k] = [0,0]}
+    all_seasons_ary.each do |season|
+      games[season][0] = @games.values.count do |g|
+        g.season == season &&
+        (g.home_team_id == team_id || g.away_team_id == team_id) &&
+        if g.home_team_id == team_id
+          g.home_goals > g.away_goals
+        elsif g.away_team_id == team_id
+          g.away_goals > g.home_goals
+        end
+      end
+      games[season][1] = @games.values.count do |g|
+        g.season == season &&
+        (g.home_team_id == team_id || g.away_team_id == team_id)
+      end
+    end
+    games
+  end
+
   def opponent_games_played(team_id)
     games_played = Hash.new(0)
     opponent_stats_hash.map do |other_team_id, num_games|
@@ -114,5 +134,4 @@ module TeamStatHelper
     end
     opponent_stats
   end
-
 end

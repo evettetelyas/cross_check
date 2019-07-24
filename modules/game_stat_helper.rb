@@ -62,5 +62,4 @@ module GameStatHelper
     new_hash = stat.merge(empty_szns) {|szn, stat_val, empty_val| stat_val - empty_val}
     new_hash.transform_values{|v| v.round(2)}
   end
-
 end

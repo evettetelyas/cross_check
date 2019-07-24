@@ -1,15 +1,13 @@
 module SeasonStatables
 
   def biggest_bust(season)
-    max = reg_post_szn_percentages(season)
-      .max_by { |team, pct| pct }
+    max = reg_post_szn_percentages(season)[1]
     max[1].round(2)
     @teams[max[0]].team_name
   end
 
   def biggest_surprise(season)
-    min = reg_post_szn_percentages(season)
-      .min_by { |team, pct| pct }
+    min = reg_post_szn_percentages(season)[0]
     min[1].round(2)
     @teams[min[0]].team_name
   end

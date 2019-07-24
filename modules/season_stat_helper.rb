@@ -1,26 +1,6 @@
 module SeasonStatHelper
 
-  def all_games_won_vs_played_by_season(team_id)
-    games = Hash.new {|h,k| h[k] = [0,0]}
-    all_seasons_ary.each do |season|
-      games[season][0] = @games.values.count do |g|
-        g.season == season &&
-        (g.home_team_id == team_id || g.away_team_id == team_id) &&
-        if g.home_team_id == team_id
-          g.home_goals > g.away_goals
-        elsif g.away_team_id == team_id
-          g.away_goals > g.home_goals
-        end
-      end
-      games[season][1] = @games.values.count do |g|
-        g.season == season &&
-        (g.home_team_id == team_id || g.away_team_id == team_id)
-      end
-    end
-    games
-  end
-
-  def games_per_season_type(team_id, post_reg, all_games = false)
+  def games_per_season_type(team_id, post_reg)
     season_games = Hash.new(0)
     all_seasons_ary.each do |season|
       season_games[season] = @games.values.count {|g| g.season == season && g.type == post_reg && (g.home_team_id == team_id || g.away_team_id == team_id)}
@@ -61,7 +41,8 @@ module SeasonStatHelper
       szn_wins[team.team_id][0] = season_win_percentages_type(team.team_id, "R")[season]
       szn_wins[team.team_id][1] = season_win_percentages_type(team.team_id, "P")[season]
     end
-    szn_wins.transform_values{|v| (v[0] - v[1].to_f)}
+    pct = szn_wins.transform_values{|v| (v[0] - v[1].to_f)}
+    pct.minmax_by { |team_id, diff| diff.round(2)}
   end
 
   def all_coaches_array(season)
@@ -126,5 +107,4 @@ module SeasonStatHelper
     end
     hash
   end
-
 end

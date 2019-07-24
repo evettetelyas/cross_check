@@ -56,6 +56,4 @@ module StatTrackerHelper
     end
     opp_data
   end
-
-
 end
